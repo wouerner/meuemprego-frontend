@@ -70,6 +70,16 @@
           </a>
         </div>
 
+        <!-- Demo Accounts -->
+        <div class="text-center text-caption text-grey-lighten-1 mb-4">
+          Contas de demonstração (senha: <code>password123</code>):
+          <div class="mt-1">
+            <code>admin@meuemprego.pro</code> ·
+            <code>carlos@meuemprego.pro</code> ·
+            <code>juliana.hunter@meuemprego.pro</code>
+          </div>
+        </div>
+
         <!-- Submit Button -->
         <v-btn
           type="submit"
@@ -136,8 +146,8 @@ import { useAuthStore } from '@/stores/auth'
 const router = useRouter()
 const authStore = useAuthStore()
 
-const emailInput = ref('carlos.eduardo@email.com')
-const password = ref('password123')
+const emailInput = ref('')
+const password = ref('')
 const rememberMe = ref(true)
 const showPassword = ref(false)
 const isFormValid = ref(false)
