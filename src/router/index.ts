@@ -29,7 +29,6 @@ const router = createRouter({
     {
       path: '/cadastro',
       name: 'UserProfileForm',
-      meta: { requiresAuth: true },
       component: () => import('@/pages/cadastro.vue'),
     },
     {

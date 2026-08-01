@@ -309,10 +309,12 @@
 
 <script lang="ts" setup>
 import { ref, reactive } from 'vue'
+import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import { useCandidatesStore } from '@/stores/candidates'
 import { isValidCPF, formatCPF } from '@/types'
 
+const router = useRouter()
 const authStore = useAuthStore()
 const candidatesStore = useCandidatesStore()
 
@@ -375,6 +377,10 @@ async function submitForm() {
   errorMessage.value = ''
 
   try {
+    if (!authStore.isAuthenticated) {
+      await authStore.register(formData.name, formData.email, formData.password)
+    }
+
     await authStore.updateCandidateProfile({
       name: formData.name,
       cpf: formData.cpf,
@@ -392,6 +398,7 @@ async function submitForm() {
     })
 
     showSnackbar.value = true
+    setTimeout(() => router.push('/hunters'), 800)
   } catch (err: any) {
     errorMessage.value = err?.response?.data?.error || err.message || 'Erro ao realizar cadastro.'
   }
