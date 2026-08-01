@@ -4,11 +4,6 @@
     <v-card class="glass-panel pa-6 pa-md-8 rounded-2xl mb-6" elevation="0">
       <v-row align="center">
         <v-col cols="12" md="8">
-          <div class="d-flex align-center gap-2 mb-2">
-            <span class="glass-badge text-primary">Cadastro Gratuito</span>
-            <span class="glass-badge text-accent">Perfil Protegido</span>
-            <span class="glass-badge text-success">Validação de CPF & Credenciais</span>
-          </div>
           <h1 class="text-h3 font-weight-black gradient-text mb-2">
             Gestão de Perfil Profissional
           </h1>
@@ -19,7 +14,6 @@
         <v-col cols="12" md="4" class="text-md-end">
           <v-chip-group v-model="profileType" mandatory color="primary" class="d-inline-flex">
             <v-chip value="candidato" filter class="font-weight-bold">Perfil Profissional</v-chip>
-            <v-chip value="hunter" filter class="font-weight-bold">Sou Job Hunter</v-chip>
           </v-chip-group>
         </v-col>
       </v-row>
@@ -33,12 +27,12 @@
             <div class="d-flex align-center justify-space-between mb-6">
               <div>
                 <h2 class="text-h5 font-weight-bold gradient-text-subtle">
-                  {{ profileType === 'candidato' ? 'Perfil Profissional' : 'Perfil do Job Hunter / Coach' }}
+                  Perfil Profissional
                 </h2>
                 <div class="text-caption text-grey">Preencha os campos obrigatórios (*) para criar seu login e cadastrar seu perfil.</div>
               </div>
               <v-avatar color="primary" size="48">
-                <v-icon :icon="profileType === 'candidato' ? 'mdi-account-school' : 'mdi-account-tie'" size="28"></v-icon>
+                <v-icon icon="mdi-account-school" size="28"></v-icon>
               </v-avatar>
             </div>
 
@@ -172,7 +166,6 @@
               </v-col>
 
               <!-- PROFESSIONAL PROFILE SPECIFIC FIELDS -->
-              <template v-if="profileType === 'candidato'">
                 <v-col cols="12" md="4">
                   <v-select
                     v-model="formData.seniority"
@@ -240,48 +233,6 @@
                     </v-switch>
                   </div>
                 </v-col>
-              </template>
-
-              <!-- HUNTER SPECIFIC FIELDS -->
-              <template v-else>
-                <v-col cols="12" md="6">
-                  <v-select
-                    v-model="formData.specialties"
-                    :items="areaOptions"
-                    label="Especializações de Atendimento *"
-                    multiple
-                    chips
-                    variant="outlined"
-                    density="comfortable"
-                    rounded="lg"
-                    :rules="[rules.arrayRequired]"
-                  ></v-select>
-                </v-col>
-
-                <v-col cols="12" md="6">
-                  <v-select
-                    v-model="formData.serviceModel"
-                    :items="serviceModelOptions"
-                    label="Modelo Principal de Atendimento *"
-                    variant="outlined"
-                    density="comfortable"
-                    rounded="lg"
-                    :rules="[rules.required]"
-                  ></v-select>
-                </v-col>
-
-                <v-col cols="12">
-                  <v-textarea
-                    v-model="formData.bio"
-                    label="Biografia e Metodologia de Assessoria *"
-                    rows="3"
-                    variant="outlined"
-                    density="comfortable"
-                    rounded="lg"
-                    :rules="[rules.required]"
-                  ></v-textarea>
-                </v-col>
-              </template>
 
               <!-- LGPD & CPF PRIVACY CONSENT -->
               <v-col cols="12" class="mt-2">
@@ -357,17 +308,15 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, watch } from 'vue'
+import { ref, reactive } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import { useCandidatesStore } from '@/stores/candidates'
-import { useHuntersStore } from '@/stores/hunters'
 import { isValidCPF, formatCPF } from '@/types'
 
 const authStore = useAuthStore()
 const candidatesStore = useCandidatesStore()
-const huntersStore = useHuntersStore()
 
-const profileType = ref<'candidato' | 'hunter'>(authStore.currentRole === 'hunter' ? 'hunter' : 'candidato')
+const profileType = ref<'candidato' | 'hunter'>('candidato')
 const formRef = ref()
 const isFormValid = ref(false)
 const showSnackbar = ref(false)
@@ -385,7 +334,6 @@ const areaOptions = [
 ]
 const seniorityOptions = ['Junior', 'Pleno', 'Senior', 'Especialista', 'Liderança / C-Level']
 const momentOptions = ['Ativo', 'Em Transição', 'Buscando recolocação', 'Aberto a Propostas']
-const serviceModelOptions = ['Assessoria Completa', 'Mentoria de Carreira', 'Revisão de LinkedIn/CV', 'Sessão Individual']
 
 const formData = reactive({
   name: authStore.candidateUser.name,
@@ -401,9 +349,6 @@ const formData = reactive({
   professionalMoment: authStore.candidateUser.professionalMoment,
   careerGoal: authStore.candidateUser.careerGoal,
   requestHunterContact: authStore.candidateUser.requestHunterContact,
-  specialties: ['Tecnologia da Informação'],
-  serviceModel: 'Assessoria Completa',
-  bio: '',
   lgpdConsent: true,
 })
 
@@ -413,7 +358,6 @@ function handleCpfInput() {
 
 const rules = {
   required: (v: any) => !!v || 'Campo obrigatório',
-  arrayRequired: (v: any[]) => (v && v.length > 0) || 'Selecione ao menos um item',
   minLength: (v: string) => (v && v.length >= 6) || 'Mínimo de 6 caracteres',
   passwordMatch: (v: string) => v === formData.password || 'As senhas não coincidem',
   email: (v: string) => /.+@.+\..+/.test(v) || 'E-mail inválido',
@@ -422,75 +366,34 @@ const rules = {
   cpfValid: (v: string) => isValidCPF(v) || 'CPF inválido. Verifique os dígitos digitados.',
   cpfNotDuplicate: (v: string) => {
     if (!v || !isValidCPF(v)) return true
-    const isDupCandidate = profileType.value === 'candidato' && candidatesStore.isCpfRegistered(v) && v !== authStore.candidateUser.cpf
-    const isDupHunter = profileType.value === 'hunter' && huntersStore.isCpfRegistered(v) && v !== authStore.hunterUser.cpf
-    return (!isDupCandidate && !isDupHunter) || 'Este CPF já está cadastrado em outro perfil.'
+    return (!candidatesStore.isCpfRegistered(v) || v === authStore.candidateUser.cpf) || 'Este CPF já está cadastrado em outro perfil.'
   },
   mustBeTrue: (v: boolean) => v === true || 'É necessário aceitar os termos da LGPD',
 }
 
-watch(profileType, (newType) => {
-  authStore.setRole(newType)
-  errorMessage.value = ''
-})
-
-function submitForm() {
+async function submitForm() {
   errorMessage.value = ''
 
   try {
-    if (profileType.value === 'candidato') {
-      authStore.updateCandidateProfile({
-        name: formData.name,
-        cpf: formData.cpf,
-        email: formData.email,
-        password: formData.password,
-        headline: formData.headline,
-        linkedInUrl: formData.linkedInUrl,
-        whatsappNumber: formData.whatsappNumber,
-        seniority: formData.seniority as any,
-        area: formData.area,
-        professionalMoment: formData.professionalMoment as any,
-        careerGoal: formData.careerGoal,
-        requestHunterContact: formData.requestHunterContact,
-        lgpdConsent: formData.lgpdConsent,
-      })
-
-      candidatesStore.registerCandidate({
-        name: formData.name,
-        cpf: formData.cpf,
-        email: formData.email,
-        password: formData.password,
-        avatar: authStore.candidateUser.avatar,
-        headline: formData.headline,
-        seniority: formData.seniority as any,
-        area: formData.area,
-        careerGoal: formData.careerGoal,
-        professionalMoment: formData.professionalMoment as any,
-        requestHunterContact: formData.requestHunterContact,
-        linkedInUrl: formData.linkedInUrl,
-        whatsappNumber: formData.whatsappNumber,
-        lgpdConsent: formData.lgpdConsent,
-      })
-    } else {
-      huntersStore.registerHunter({
-        name: formData.name,
-        cpf: formData.cpf,
-        email: formData.email,
-        password: formData.password,
-        avatar: authStore.hunterUser.avatar,
-        headline: formData.headline,
-        bio: formData.bio || 'Consultor de carreira especialista.',
-        specialties: formData.specialties,
-        senioritiesServed: ['Senior', 'Especialista'],
-        serviceModel: formData.serviceModel as any,
-        linkedInUrl: formData.linkedInUrl,
-        whatsappNumber: formData.whatsappNumber,
-      })
-    }
+    await authStore.updateCandidateProfile({
+      name: formData.name,
+      cpf: formData.cpf,
+      email: formData.email,
+      password: formData.password,
+      headline: formData.headline,
+      linkedInUrl: formData.linkedInUrl,
+      whatsappNumber: formData.whatsappNumber,
+      seniority: formData.seniority as any,
+      area: formData.area,
+      professionalMoment: formData.professionalMoment as any,
+      careerGoal: formData.careerGoal,
+      requestHunterContact: formData.requestHunterContact,
+      lgpdConsent: formData.lgpdConsent,
+    })
 
     showSnackbar.value = true
   } catch (err: any) {
-    errorMessage.value = err.message || 'Erro ao realizar cadastro.'
+    errorMessage.value = err?.response?.data?.error || err.message || 'Erro ao realizar cadastro.'
   }
 }
 </script>

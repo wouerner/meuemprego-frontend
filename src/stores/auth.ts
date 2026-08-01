@@ -2,51 +2,98 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import type { UserRole, CandidateProfile, HunterProfile } from '@/types'
 import { useCandidatesStore } from '@/stores/candidates'
+import { candidatesApi, huntersApi } from '@/services/meuemprego-api'
+import api from '@/services/api'
 
-export const useAuthStore = defineStore('auth', () => {
-  const currentRole = ref<UserRole>('candidato')
-
-  const candidateUser = ref<CandidateProfile>({
-    id: 'cand-user-1',
-    name: 'Carlos Eduardo',
-    cpf: '529.982.247-25',
-    email: 'carlos.eduardo@email.com',
-    password: 'password123',
-    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=250&q=80',
-    headline: 'Engenheiro de Software Senior | Especialista Vue & Node',
-    seniority: 'Senior',
-    area: 'Tecnologia da Informação',
-    careerGoal: 'Transição para Liderança Técnica / Tech Lead em Tech Company global',
+function emptyCandidateProfile(): CandidateProfile {
+  return {
+    id: '',
+    name: '',
+    cpf: '',
+    email: '',
+    password: '',
+    avatar: '',
+    headline: '',
+    seniority: 'Pleno',
+    area: '',
+    careerGoal: '',
     professionalMoment: 'Aberto a Propostas',
     requestHunterContact: true,
-    linkedInUrl: 'https://www.linkedin.com/in/carlos-eduardo-demo',
-    whatsappNumber: '5511998765432',
-    lgpdConsent: true,
-    createdAt: '2026-07-20',
-    isApproved: true,
-  })
+    linkedInUrl: '',
+    whatsappNumber: '',
+    lgpdConsent: false,
+    createdAt: '',
+    isApproved: false,
+  }
+}
 
-  const hunterUser = ref<HunterProfile>({
-    id: 'hunt-user-1',
-    name: 'Juliana Mendes',
-    cpf: '111.444.777-35',
-    email: 'juliana.mendes@careerhunter.com.br',
-    password: 'password123',
-    avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=250&q=80',
-    headline: 'Executive Headhunter & Coach de Carreira Tech',
-    bio: 'Mais de 10 anos recolocando lideranças e especialistas de tecnologia nos maiores ecossistemas de inovação.',
-    specialties: ['Tecnologia da Informação', 'Produtos & Design', 'Liderança Executiva'],
-    senioritiesServed: ['Senior', 'Especialista', 'Liderança / C-Level'],
+function emptyHunterProfile(): HunterProfile {
+  return {
+    id: '',
+    name: '',
+    cpf: '',
+    email: '',
+    password: '',
+    avatar: '',
+    headline: '',
+    bio: '',
+    specialties: [],
+    senioritiesServed: [],
     serviceModel: 'Assessoria Completa',
-    linkedInUrl: 'https://www.linkedin.com/in/juliana-mendes-headhunter',
-    whatsappNumber: '5511988887777',
-    status: 'Aprovado',
-    rating: 4.9,
-    totalContactsCount: 142,
-    createdAt: '2026-07-01',
-  })
+    linkedInUrl: '',
+    whatsappNumber: '',
+    status: 'Pendente',
+    rating: 0,
+    totalContactsCount: 0,
+    createdAt: '',
+  }
+}
+
+export const useAuthStore = defineStore('auth', () => {
+  const token = ref<string | null>(localStorage.getItem('auth_token'))
+  const user = ref<{ id: number; name: string; email: string; created_at?: string } | null>(
+    JSON.parse(localStorage.getItem('auth_user') || 'null'),
+  )
+  const currentRole = ref<UserRole>('visitante')
+  const isLoading = ref(false)
+  const profilesLoaded = ref(false)
+
+  const candidateUser = ref<CandidateProfile>(emptyCandidateProfile())
+  const hunterUser = ref<HunterProfile>(emptyHunterProfile())
+
+  const isAuthenticated = computed(() => !!token.value && !!user.value)
+
+  async function loadProfiles() {
+    if (!isAuthenticated.value || profilesLoaded.value) return
+    try {
+      const [candidate, hunter] = await Promise.all([
+        candidatesApi.me(),
+        huntersApi.me(),
+      ])
+      if (candidate) candidateUser.value = candidate
+      if (hunter) hunterUser.value = hunter
+    } catch {
+      // Profile loading is non-blocking
+    } finally {
+      profilesLoaded.value = true
+    }
+  }
 
   const currentUser = computed(() => {
+    if (isAuthenticated.value && user.value) {
+      const profile = currentRole.value === 'hunter' ? hunterUser.value : candidateUser.value
+      return {
+        id: String(user.value.id),
+        name: user.value.name,
+        email: user.value.email,
+        avatar: profile.avatar || '',
+        headline: profile.headline || '',
+        linkedInUrl: profile.linkedInUrl || '',
+        whatsappNumber: profile.whatsappNumber || '',
+        createdAt: user.value.created_at || new Date().toISOString(),
+        cpf: profile.cpf || '',
+      }
+    }
     if (currentRole.value === 'hunter') return hunterUser.value
     if (currentRole.value === 'candidato') return candidateUser.value
     return {
@@ -58,32 +105,145 @@ export const useAuthStore = defineStore('auth', () => {
     }
   })
 
+  function detectRole(email: string): UserRole {
+    const lower = email.toLowerCase()
+    if (lower.includes('admin')) return 'admin'
+    if (lower.includes('hunter')) return 'hunter'
+    return 'candidato'
+  }
+
+  async function login(email: string, password: string) {
+    isLoading.value = true
+    try {
+      const { data } = await api.post('/auth/login', { email, password })
+      token.value = data.token
+      user.value = { id: data.user.id, name: data.user.name, email: data.user.email }
+      localStorage.setItem('auth_token', data.token)
+      localStorage.setItem('auth_user', JSON.stringify(user.value))
+      currentRole.value = detectRole(email)
+      await loadProfiles()
+      return data
+    } finally {
+      isLoading.value = false
+    }
+  }
+
+  async function register(name: string, email: string, password: string) {
+    isLoading.value = true
+    try {
+      const { data } = await api.post('/auth/register', { name, email, password })
+      token.value = data.token
+      user.value = { id: data.user.id, name: data.user.name, email: data.user.email }
+      localStorage.setItem('auth_token', data.token)
+      localStorage.setItem('auth_user', JSON.stringify(user.value))
+      currentRole.value = detectRole(email)
+      await loadProfiles()
+      return data
+    } finally {
+      isLoading.value = false
+    }
+  }
+
+  async function fetchMe() {
+    try {
+      const { data } = await api.get('/users/me')
+      user.value = { id: data.id, name: data.name, email: data.email }
+      localStorage.setItem('auth_user', JSON.stringify(user.value))
+      currentRole.value = detectRole(data.email)
+      await loadProfiles()
+      return data
+    } catch {
+      logout()
+      return null
+    }
+  }
+
+  function logout() {
+    token.value = null
+    user.value = null
+    currentRole.value = 'visitante'
+    profilesLoaded.value = false
+    candidateUser.value = emptyCandidateProfile()
+    hunterUser.value = emptyHunterProfile()
+    localStorage.removeItem('auth_token')
+    localStorage.removeItem('auth_user')
+  }
+
+  async function init() {
+    if (token.value && !user.value) {
+      await fetchMe()
+    }
+    await loadProfiles()
+  }
+
   function setRole(role: UserRole) {
     currentRole.value = role
   }
 
-  function updateCandidateProfile(updated: Partial<CandidateProfile>) {
-    candidateUser.value = { ...candidateUser.value, ...updated }
-    // Sync with candidates store
+  async function updateCandidateProfile(updated: Partial<CandidateProfile>) {
+    const merged = { ...candidateUser.value, ...updated }
+    candidateUser.value = merged
     const candidatesStore = useCandidatesStore()
-    candidatesStore.updateCandidateInStore(candidateUser.value.id, updated)
+    const saved = await candidatesApi.saveMe({
+      name: merged.name,
+      cpf: merged.cpf,
+      email: merged.email,
+      password: merged.password || undefined,
+      avatar: merged.avatar,
+      headline: merged.headline,
+      seniority: merged.seniority,
+      area: merged.area,
+      career_goal: merged.careerGoal,
+      professional_moment: merged.professionalMoment,
+      request_hunter_contact: merged.requestHunterContact,
+      lgpd_consent: merged.lgpdConsent,
+      linkedin_url: merged.linkedInUrl,
+      whatsapp_number: merged.whatsappNumber,
+    })
+    candidateUser.value = saved
+    candidatesStore.updateCandidateInStore(saved.id, saved)
   }
 
-  function toggleCandidateContactRequest(enabled: boolean) {
-    candidateUser.value.requestHunterContact = enabled
-    const candidatesStore = useCandidatesStore()
-    candidatesStore.updateCandidateInStore(candidateUser.value.id, { requestHunterContact: enabled })
+  async function toggleCandidateContactRequest(enabled: boolean) {
+    await updateCandidateProfile({ requestHunterContact: enabled })
   }
 
-  function updateHunterProfile(updated: Partial<HunterProfile>) {
-    hunterUser.value = { ...hunterUser.value, ...updated }
+  async function updateHunterProfile(updated: Partial<HunterProfile>) {
+    const merged = { ...hunterUser.value, ...updated }
+    hunterUser.value = merged
+    const saved = await huntersApi.saveMe({
+      name: merged.name,
+      cpf: merged.cpf,
+      email: merged.email,
+      password: merged.password || undefined,
+      avatar: merged.avatar,
+      headline: merged.headline,
+      bio: merged.bio,
+      specialties: merged.specialties,
+      seniorities_served: merged.senioritiesServed,
+      service_model: merged.serviceModel,
+      linkedin_url: merged.linkedInUrl,
+      whatsapp_number: merged.whatsappNumber,
+    })
+    hunterUser.value = saved
   }
 
   return {
+    token,
+    user,
     currentRole,
     candidateUser,
     hunterUser,
+    profilesLoaded,
+    isAuthenticated,
+    isLoading,
     currentUser,
+    login,
+    register,
+    fetchMe,
+    logout,
+    init,
+    loadProfiles,
     setRole,
     updateCandidateProfile,
     toggleCandidateContactRequest,

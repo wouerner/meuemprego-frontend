@@ -3,6 +3,7 @@ export type UserRole = 'candidato' | 'hunter' | 'admin' | 'visitante'
 
 export interface BaseProfile {
   id: string
+  user_id?: number | null
   name: string
   cpf: string
   email: string
@@ -84,6 +85,22 @@ export function isValidCPF(cpf: string): boolean {
   if (remainder !== parseInt(cleanCPF.substring(10, 11))) return false
 
   return true
+}
+
+// Access Request from Hunter to Candidate
+export type AccessRequestStatus = 'pending' | 'accepted' | 'rejected'
+
+export interface HunterAccessRequest {
+  id: string
+  hunterId: string
+  candidateId?: string
+  hunterName: string
+  hunterAvatar: string
+  hunterHeadline: string
+  hunterSpecialties: string[]
+  message: string
+  status: AccessRequestStatus
+  requestedAt: string
 }
 
 // CPF Formatting Helper

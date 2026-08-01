@@ -30,6 +30,18 @@
       </v-row>
     </v-card>
 
+    <!-- Pending Hunter Warning -->
+    <v-alert
+      v-if="authStore.currentRole === 'hunter' && currentHunter && currentHunter.status !== 'Aprovado'"
+      type="warning"
+      variant="tonal"
+      rounded="xl"
+      class="mb-6 font-weight-bold"
+      icon="mdi-shield-alert-outline"
+    >
+      Seu perfil de Job Hunter está <strong>{{ currentHunter.status }}</strong>. Enquanto o administrador não aprovar seu cadastro, você não poderá enviar solicitações de acesso aos perfis profissionais.
+    </v-alert>
+
     <!-- Filters Section -->
     <v-card class="glass-panel pa-5 rounded-2xl mb-6" elevation="0">
       <v-row density="comfortable" align="center">
@@ -155,7 +167,19 @@
           <v-divider class="my-3 opacity-20"></v-divider>
 
           <!-- Contact Buttons for Job Hunters -->
-          <div class="d-flex gap-2">
+          <div class="d-flex flex-wrap gap-2">
+            <v-btn
+              v-if="isApprovedHunter"
+              color="primary"
+              variant="tonal"
+              rounded="pill"
+              class="flex-grow-1 font-weight-bold"
+              prepend-icon="mdi-file-document-plus-outline"
+              @click="openAccessRequestDialog(candidate)"
+            >
+              Solicitar Acesso
+            </v-btn>
+
             <v-btn
               flex="1"
               color="success"
@@ -225,6 +249,57 @@
       target-type="candidate"
     />
 
+    <!-- Access Request Dialog -->
+    <v-dialog v-model="showAccessRequestDialog" max-width="520">
+      <v-card class="glass-panel pa-6 rounded-2xl" elevation="0">
+        <div class="d-flex align-center justify-space-between mb-4">
+          <h3 class="text-h6 font-weight-bold gradient-text">Solicitar Acesso ao Perfil</h3>
+          <v-btn icon="mdi-close" variant="text" size="small" @click="showAccessRequestDialog = false"></v-btn>
+        </div>
+        <p class="text-body-2 text-grey-lighten-1 mb-1">
+          Enviar pedido de acesso para
+          <strong class="text-white">{{ selectedAccessCandidate?.name }}</strong>
+        </p>
+        <p class="text-caption text-grey mb-4">
+          O candidato precisará aceitar o pedido para que você possa visualizar seus dados de contato.
+        </p>
+        <v-textarea
+          v-model="accessRequestMessage"
+          label="Mensagem de apresentação *"
+          placeholder="Olá! Vi seu perfil na vitrine e acredito que posso ajudar na sua transição de carreira..."
+          rows="4"
+          variant="outlined"
+          density="comfortable"
+          rounded="lg"
+          class="mb-4"
+          :rules="[rules.required]"
+        ></v-textarea>
+        <v-alert
+          v-if="accessRequestError"
+          type="error"
+          variant="tonal"
+          rounded="xl"
+          closable
+          class="mb-4 font-weight-bold"
+          @click:close="accessRequestError = ''"
+        >
+          {{ accessRequestError }}
+        </v-alert>
+        <div class="d-flex justify-end gap-2">
+          <v-btn variant="text" rounded="pill" @click="showAccessRequestDialog = false">Cancelar</v-btn>
+          <v-btn
+            class="glass-btn-primary"
+            rounded="pill"
+            prepend-icon="mdi-send"
+            :disabled="!accessRequestMessage"
+            @click="sendAccessRequest"
+          >
+            Enviar Pedido
+          </v-btn>
+        </div>
+      </v-card>
+    </v-dialog>
+
     <!-- Candidate Detail Dialog -->
     <v-dialog v-model="showDetailDialog" max-width="600">
       <v-card class="glass-panel pa-6 rounded-2xl" elevation="0" v-if="selectedCandidate">
@@ -263,16 +338,23 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useCandidatesStore } from '@/stores/candidates'
+import { useHuntersStore } from '@/stores/hunters'
 import { useMetricsStore } from '@/stores/metrics'
 import { useAuthStore } from '@/stores/auth'
 import WhatsAppContactModal from '@/components/WhatsAppContactModal.vue'
 import type { CandidateProfile, CandidateStatus } from '@/types'
 
 const candidatesStore = useCandidatesStore()
+const huntersStore = useHuntersStore()
 const metricsStore = useMetricsStore()
 const authStore = useAuthStore()
+
+onMounted(() => {
+  if (!candidatesStore.loaded) candidatesStore.fetchCandidates()
+  if (!huntersStore.loaded) huntersStore.fetchHunters()
+})
 
 const page = ref(1)
 const itemsPerPage = ref(6)
@@ -289,6 +371,22 @@ const showWhatsAppDialog = ref(false)
 const showDetailDialog = ref(false)
 const selectedCandidate = ref<CandidateProfile | null>(null)
 
+// Access request state
+const showAccessRequestDialog = ref(false)
+const accessRequestMessage = ref('')
+const accessRequestError = ref('')
+const selectedAccessCandidate = ref<CandidateProfile | null>(null)
+
+const currentHunter = computed(() => {
+  if (authStore.currentRole !== 'hunter') return null
+  return huntersStore.hunters.find(h => h.name === authStore.hunterUser.name) || null
+})
+
+const isApprovedHunter = computed(() => {
+  const hunter = currentHunter.value
+  return hunter?.status === 'Aprovado'
+})
+
 const areaOptions = [
   'Tecnologia da Informação',
   'Produtos & Design',
@@ -300,6 +398,10 @@ const areaOptions = [
 
 const seniorityOptions = ['Junior', 'Pleno', 'Senior', 'Especialista', 'Liderança / C-Level']
 const momentOptions = ['Ativo', 'Em Transição', 'Buscando recolocação', 'Aberto a Propostas']
+
+const rules = {
+  required: (v: string) => !!v || 'Campo obrigatório',
+}
 
 function resetFilters() {
   candidatesStore.searchQuery = ''
@@ -336,6 +438,31 @@ function contactCandidateLinkedIn(candidate: CandidateProfile) {
     '',
     authStore.currentRole
   )
+}
+
+function openAccessRequestDialog(candidate: CandidateProfile) {
+  selectedAccessCandidate.value = candidate
+  accessRequestMessage.value = ''
+  accessRequestError.value = ''
+  showAccessRequestDialog.value = true
+}
+
+async function sendAccessRequest() {
+  const hunter = currentHunter.value
+  const candidate = selectedAccessCandidate.value
+  if (!hunter || !candidate) return
+  if (!accessRequestMessage.value.trim()) {
+    accessRequestError.value = 'Escreva uma mensagem de apresentação.'
+    return
+  }
+  try {
+    await huntersStore.sendAccessRequest(candidate.id, accessRequestMessage.value.trim())
+    showAccessRequestDialog.value = false
+    accessRequestMessage.value = ''
+    accessRequestError.value = ''
+  } catch (err: any) {
+    accessRequestError.value = err?.response?.data?.error || err.message || 'Erro ao enviar solicitação de acesso.'
+  }
 }
 </script>
 

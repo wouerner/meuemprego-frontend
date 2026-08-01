@@ -72,9 +72,6 @@
               <v-icon :icon="item.icon" class="mr-3" color="secondary"></v-icon>
             </template>
             <v-list-item-title class="font-weight-medium">{{ item.title }}</v-list-item-title>
-            <template #append v-if="item.badge">
-              <span class="glass-badge text-accent">{{ item.badge }}</span>
-            </template>
           </v-list-item>
         </v-list>
       </v-navigation-drawer>
@@ -99,6 +96,7 @@
 
         <!-- Login Link -->
         <v-btn
+          v-if="!authStore.isAuthenticated"
           to="/login"
           variant="text"
           rounded="pill"
@@ -189,10 +187,21 @@
           </v-badge>
         </v-btn>
 
-        <!-- User Profile Avatar -->
-        <v-avatar color="primary" size="40" class="cursor-pointer elevation-4" to="/cadastro">
-          <v-img :src="authStore.currentUser.avatar" alt="User"></v-img>
-        </v-avatar>
+        <!-- User Profile Avatar / Logout -->
+        <template v-if="authStore.isAuthenticated">
+          <v-btn
+            variant="text"
+            rounded="pill"
+            class="mr-2 font-weight-bold"
+            prepend-icon="mdi-logout"
+            @click="handleLogout"
+          >
+            Sair
+          </v-btn>
+          <v-avatar color="primary" size="40" class="cursor-pointer elevation-4" to="/cadastro">
+            <v-img :src="authStore.currentUser?.avatar || ''" alt="User"></v-img>
+          </v-avatar>
+        </template>
       </v-app-bar>
 
       <!-- Toast Snackbar for Status Change -->
@@ -235,11 +244,13 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import { useTheme } from 'vuetify'
 import { useAuthStore } from '@/stores/auth'
 import { useMetricsStore } from '@/stores/metrics'
 
+const router = useRouter()
 const drawer = ref(true)
 const theme = useTheme()
 const authStore = useAuthStore()
@@ -252,19 +263,29 @@ const toastIcon = ref('mdi-eye-outline')
 
 const isDark = computed(() => theme.global.name.value === 'darkGlassTheme')
 
+onMounted(() => {
+  authStore.init()
+  if (authStore.isAuthenticated) metricsStore.fetchEvents()
+})
+
 function toggleTheme() {
   theme.global.name.value = isDark.value ? 'lightGlassTheme' : 'darkGlassTheme'
 }
 
-function toggleContactStatus(val: boolean | null) {
+async function toggleContactStatus(val: boolean | null) {
   const enabled = Boolean(val)
-  authStore.toggleCandidateContactRequest(enabled)
+  await authStore.toggleCandidateContactRequest(enabled)
   toastColor.value = enabled ? 'success' : 'error'
   toastIcon.value = enabled ? 'mdi-eye-outline' : 'mdi-eye-off-outline'
   toastMessage.value = enabled
     ? 'Seu perfil profissional foi ATIVADO na vitrine!'
     : 'Seu perfil profissional foi OCULTADO. Você não receberá novos contatos.'
   showStatusToast.value = true
+}
+
+function handleLogout() {
+  authStore.logout()
+  router.push('/')
 }
 
 const roleDisplayName = computed(() => {
@@ -285,15 +306,22 @@ const roleChipIcon = computed(() => {
   return 'mdi-account-school'
 })
 
-const menuItems = computed(() => [
-  { title: 'Início (Landing Page)', icon: 'mdi-home-outline', to: '/', badge: 'Home' },
-  { title: 'Entrar na Conta', icon: 'mdi-login', to: '/login', badge: 'Login' },
-  { title: 'Catálogo de Job Hunters', icon: 'mdi-account-search-outline', to: '/hunters', badge: 'Catálogo' },
-  { title: 'Vitrine de Profissionais', icon: 'mdi-account-group-outline', to: '/candidatos', badge: 'Vitrine' },
-  { title: 'Meu Perfil Profissional', icon: 'mdi-card-account-details-outline', to: '/cadastro', badge: 'Perfil' },
-  { title: 'Painel do Administrador', icon: 'mdi-shield-check-outline', to: '/admin', badge: 'Curadoria' },
-  { title: 'Métricas de Transbordo', icon: 'mdi-chart-line-variant', to: '/metricas', badge: 'Métricas' },
-])
+const menuItems = computed(() => {
+  const isCandidate = authStore.currentRole === 'candidato'
+  return [
+    { title: 'Início (Landing Page)', icon: 'mdi-home-outline', to: '/' },
+    ...(authStore.isAuthenticated ? [] : [{ title: 'Entrar na Conta', icon: 'mdi-login', to: '/login' }]),
+    {
+      title: isCandidate ? 'Meus Pedidos de Acesso' : 'Catálogo de Job Hunters',
+      icon: isCandidate ? 'mdi-file-document-outline' : 'mdi-account-search-outline',
+      to: '/hunters',
+    },
+    { title: 'Vitrine de Profissionais', icon: 'mdi-account-group-outline', to: '/candidatos' },
+    { title: 'Meu Perfil Profissional', icon: 'mdi-card-account-details-outline', to: '/cadastro' },
+    { title: 'Painel do Administrador', icon: 'mdi-shield-check-outline', to: '/admin' },
+    { title: 'Métricas de Transbordo', icon: 'mdi-chart-line-variant', to: '/metricas' },
+  ]
+})
 </script>
 
 <style scoped>

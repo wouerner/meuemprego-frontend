@@ -146,14 +146,14 @@ function closeModal() {
   emit('update:modelValue', false)
 }
 
-function confirmAndRedirect() {
+async function confirmAndRedirect() {
   if (!props.targetProfile) return
 
   if (props.targetType === 'hunter') {
-    huntersStore.incrementHunterContact(props.targetProfile.id)
+    await huntersStore.incrementHunterContact(props.targetProfile.id)
   }
 
-  metricsStore.triggerContactRedirection(
+  await metricsStore.triggerContactRedirection(
     props.targetType,
     props.targetProfile.id,
     props.targetProfile.name,

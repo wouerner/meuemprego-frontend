@@ -77,8 +77,8 @@
           class="glass-btn-primary py-4 text-subtitle-1 mb-6"
           size="large"
           rounded="pill"
-          :loading="isLoading"
-          :disabled="!isFormValid"
+          :loading="authStore.isLoading"
+          :disabled="!isFormValid || authStore.isLoading"
           prepend-icon="mdi-login"
         >
           Entrar na Plataforma
@@ -132,17 +132,14 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
-import { useHuntersStore } from '@/stores/hunters'
 
 const router = useRouter()
 const authStore = useAuthStore()
-const huntersStore = useHuntersStore()
 
 const emailInput = ref('carlos.eduardo@email.com')
 const password = ref('password123')
 const rememberMe = ref(true)
 const showPassword = ref(false)
-const isLoading = ref(false)
 const isFormValid = ref(false)
 const errorMessage = ref('')
 const showForgotDialog = ref(false)
@@ -156,44 +153,29 @@ const rules = {
   minLength: (v: string) => (v && v.length >= 6) || 'Mínimo de 6 caracteres',
 }
 
-function handleLogin() {
+async function handleLogin() {
   errorMessage.value = ''
-  isLoading.value = true
 
-  setTimeout(() => {
-    const input = emailInput.value.trim().toLowerCase()
-    let detectedRole: 'candidato' | 'hunter' | 'admin' = 'candidato'
+  try {
+    await authStore.login(emailInput.value.trim(), password.value)
+    const role = authStore.currentRole
 
-    // Identify profile type automatically by email
-    if (input.includes('admin')) {
-      detectedRole = 'admin'
-    } else if (
-      input.includes('hunter') ||
-      input.includes('juliana') ||
-      huntersStore.hunters.some(h => h.email.toLowerCase() === input)
-    ) {
-      detectedRole = 'hunter'
-    } else {
-      detectedRole = 'candidato'
-    }
-
-    authStore.setRole(detectedRole)
-    isLoading.value = false
-
-    const roleText = detectedRole === 'hunter' ? 'Job Hunter' : detectedRole === 'admin' ? 'Administrador' : 'Perfil Profissional'
+    const roleText = role === 'hunter' ? 'Job Hunter' : role === 'admin' ? 'Administrador' : 'Perfil Profissional'
     toastMessage.value = `Bem-vindo de volta! Perfil identificado: ${roleText}.`
     showToast.value = true
 
     setTimeout(() => {
-      if (detectedRole === 'admin') {
+      if (role === 'admin') {
         router.push('/admin')
-      } else if (detectedRole === 'hunter') {
+      } else if (role === 'hunter') {
         router.push('/candidatos')
       } else {
         router.push('/hunters')
       }
     }, 800)
-  }, 600)
+  } catch (err: any) {
+    errorMessage.value = err.response?.data?.error || 'Erro ao fazer login. Verifique suas credenciais.'
+  }
 }
 
 function sendPasswordReset() {

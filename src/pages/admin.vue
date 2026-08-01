@@ -225,7 +225,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useHuntersStore } from '@/stores/hunters'
 import { useCandidatesStore } from '@/stores/candidates'
 
@@ -233,18 +233,23 @@ const tab = ref('pendingHunters')
 const huntersStore = useHuntersStore()
 const candidatesStore = useCandidatesStore()
 
-function approveHunter(id: string) {
-  huntersStore.setHunterStatus(id, 'Aprovado')
+onMounted(() => {
+  if (!huntersStore.loaded) huntersStore.fetchHunters()
+  if (!candidatesStore.loaded) candidatesStore.fetchCandidates()
+})
+
+async function approveHunter(id: string) {
+  await huntersStore.setHunterStatus(id, 'Aprovado')
 }
 
-function rejectHunter(id: string) {
-  huntersStore.setHunterStatus(id, 'Rejeitado')
+async function rejectHunter(id: string) {
+  await huntersStore.setHunterStatus(id, 'Rejeitado')
 }
 
-function approveAllPendingHunters() {
-  huntersStore.pendingHunters.forEach(h => {
-    huntersStore.setHunterStatus(h.id, 'Aprovado')
-  })
+async function approveAllPendingHunters() {
+  for (const h of huntersStore.pendingHunters) {
+    await huntersStore.setHunterStatus(h.id, 'Aprovado')
+  }
 }
 </script>
 

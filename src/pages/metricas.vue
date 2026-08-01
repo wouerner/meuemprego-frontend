@@ -186,10 +186,14 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useMetricsStore } from '@/stores/metrics'
 
 const metricsStore = useMetricsStore()
+
+onMounted(() => {
+  metricsStore.fetchEvents()
+})
 
 const page = ref(1)
 const itemsPerPage = ref(5)

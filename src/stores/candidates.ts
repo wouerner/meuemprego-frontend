@@ -1,106 +1,28 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import type { CandidateProfile, SeniorityLevel, CandidateStatus } from '@/types'
+import { candidatesApi, type CandidatePayload } from '@/services/meuemprego-api'
 
 export const useCandidatesStore = defineStore('candidates', () => {
-  const candidates = ref<CandidateProfile[]>([
-    {
-      id: 'cand-user-1',
-      name: 'Carlos Eduardo',
-      cpf: '529.982.247-25',
-      email: 'carlos.eduardo@email.com',
-      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=250&q=80',
-      headline: 'Engenheiro de Software Senior | Fullstack (Vue.js, Node.js)',
-      seniority: 'Senior',
-      area: 'Tecnologia da Informação',
-      careerGoal: 'Transição para Tech Lead ou Engenheiro Staff em empresa global de tecnologia.',
-      professionalMoment: 'Aberto a Propostas',
-      requestHunterContact: true,
-      linkedInUrl: 'https://www.linkedin.com/in/carlos-eduardo-demo',
-      whatsappNumber: '5511998765432',
-      lgpdConsent: true,
-      createdAt: '2026-07-20',
-      isApproved: true,
-    },
-    {
-      id: 'cand-2',
-      name: 'Mariana Silva',
-      cpf: '111.444.777-35',
-      email: 'mariana.silva@email.com',
-      avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=250&q=80',
-      headline: 'Product Manager Pleno | Experiência em Fintechs & B2B SaaS',
-      seniority: 'Pleno',
-      area: 'Produtos & Design',
-      careerGoal: 'Aceleração para cadeira de Senior Product Manager com liderança de squad.',
-      professionalMoment: 'Em Transição',
-      requestHunterContact: true,
-      linkedInUrl: 'https://www.linkedin.com/in/mariana-silva-pm',
-      whatsappNumber: '5511987654321',
-      lgpdConsent: true,
-      createdAt: '2026-07-18',
-      isApproved: true,
-    },
-    {
-      id: 'cand-3',
-      name: 'Gabriel Santos',
-      cpf: '222.333.444-55',
-      email: 'gabriel.santos@email.com',
-      avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=250&q=80',
-      headline: 'Diretor de Vendas & Expansion | Growth B2B',
-      seniority: 'Liderança / C-Level',
-      area: 'Vendas / Comercial',
-      careerGoal: 'Colocação executiva como VP of Sales ou Chief Revenue Officer (CRO).',
-      professionalMoment: 'Buscando recolocação',
-      requestHunterContact: true,
-      linkedInUrl: 'https://www.linkedin.com/in/gabriel-santos-cro',
-      whatsappNumber: '5511976543219',
-      lgpdConsent: true,
-      createdAt: '2026-07-15',
-      isApproved: true,
-    },
-    {
-      id: 'cand-4',
-      name: 'Beatriz Lima',
-      cpf: '333.444.555-66',
-      email: 'beatriz.lima@email.com',
-      avatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=250&q=80',
-      headline: 'Cientista de Dados Pleno | Python, Machine Learning & SQL',
-      seniority: 'Pleno',
-      area: 'Data & Analytics',
-      careerGoal: 'Conquistar primeira oportunidade internacional remota em IA e Data Science.',
-      professionalMoment: 'Ativo',
-      requestHunterContact: true,
-      linkedInUrl: 'https://www.linkedin.com/in/beatriz-lima-ds',
-      whatsappNumber: '5521998877665',
-      lgpdConsent: true,
-      createdAt: '2026-07-21',
-      isApproved: true,
-    },
-    {
-      id: 'cand-5',
-      name: 'Felipe Oliveira',
-      cpf: '444.555.666-77',
-      email: 'felipe.oliveira@email.com',
-      avatar: 'https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?auto=format&fit=crop&w=250&q=80',
-      headline: 'Especialista de RH & Business Partner (HRBP)',
-      seniority: 'Especialista',
-      area: 'Recursos Humanos',
-      careerGoal: 'Mentoria para reformulação estratégica de currículo e entrevistas em multinacionais.',
-      professionalMoment: 'Aberto a Propostas',
-      requestHunterContact: true,
-      linkedInUrl: 'https://www.linkedin.com/in/felipe-oliveira-hrbp',
-      whatsappNumber: '5531988776655',
-      lgpdConsent: true,
-      createdAt: '2026-07-22',
-      isApproved: true,
-    },
-  ])
+  const candidates = ref<CandidateProfile[]>([])
+  const isLoading = ref(false)
+  const loaded = ref(false)
 
   // Filters State
   const searchQuery = ref('')
   const selectedArea = ref<string | null>(null)
   const selectedSeniority = ref<SeniorityLevel | null>(null)
   const selectedMoment = ref<CandidateStatus | null>(null)
+
+  async function fetchCandidates() {
+    isLoading.value = true
+    try {
+      candidates.value = await candidatesApi.list()
+      loaded.value = true
+    } finally {
+      isLoading.value = false
+    }
+  }
 
   // Anti-Duplication Check (RF-008)
   function isCpfRegistered(cpf: string): boolean {
@@ -129,46 +51,70 @@ export const useCandidatesStore = defineStore('candidates', () => {
     })
   })
 
-  function toggleCandidateApproval(id: string) {
+  async function toggleCandidateApproval(id: string) {
     const candidate = candidates.value.find(c => c.id === id)
-    if (candidate) {
-      candidate.isApproved = !candidate.isApproved
-    }
+    if (!candidate) return
+
+    const updated = await candidatesApi.setApproval(id, !candidate.isApproved)
+    const index = candidates.value.findIndex(c => c.id === id)
+    if (index !== -1) candidates.value[index] = updated
   }
 
-  function updateCandidateInStore(id: string, updated: Partial<CandidateProfile>) {
+  async function updateCandidateInStore(id: string, updated: Partial<CandidateProfile>) {
     const candidate = candidates.value.find(c => c.id === id)
     if (candidate) {
       Object.assign(candidate, updated)
     }
   }
 
+  async function saveProfile(payload: CandidatePayload): Promise<CandidateProfile> {
+    const saved = await candidatesApi.saveMe(payload)
+    const index = candidates.value.findIndex(c => c.id === saved.id)
+    if (index !== -1) {
+      candidates.value[index] = saved
+    } else {
+      candidates.value.unshift(saved)
+    }
+    return saved
+  }
+
   function registerCandidate(newCandidate: Omit<CandidateProfile, 'id' | 'createdAt' | 'isApproved'>) {
     if (isCpfRegistered(newCandidate.cpf)) {
       throw new Error('CPF já cadastrado na plataforma para outro Candidato.')
     }
-
-    const candidate: CandidateProfile = {
-      ...newCandidate,
-      id: `cand-${Date.now()}`,
-      createdAt: new Date().toISOString().split('T')[0],
-      isApproved: true, // Approved by default or moderated by admin
-    }
-    candidates.value.unshift(candidate)
-    return candidate
+    return saveProfile({
+      name: newCandidate.name,
+      cpf: newCandidate.cpf,
+      email: newCandidate.email,
+      password: newCandidate.password,
+      avatar: newCandidate.avatar,
+      headline: newCandidate.headline,
+      seniority: newCandidate.seniority,
+      area: newCandidate.area,
+      career_goal: newCandidate.careerGoal,
+      professional_moment: newCandidate.professionalMoment,
+      request_hunter_contact: newCandidate.requestHunterContact,
+      lgpd_consent: newCandidate.lgpdConsent,
+      linkedin_url: newCandidate.linkedInUrl,
+      whatsapp_number: newCandidate.whatsappNumber,
+    })
   }
 
   return {
     candidates,
+    isLoading,
+    loaded,
     searchQuery,
     selectedArea,
     selectedSeniority,
     selectedMoment,
+    fetchCandidates,
     visibleTalentPool,
     filteredCandidates,
     isCpfRegistered,
     toggleCandidateApproval,
     updateCandidateInStore,
+    saveProfile,
     registerCandidate,
   }
 })
