@@ -217,9 +217,6 @@ function formatDate(isoStr: string) {
 </script>
 
 <style scoped>
-.gap-2 { gap: 8px; }
-.gap-3 { gap: 12px; }
-.max-w-650 { max-width: 650px; }
 .border-top-glass {
   border-top: 1px solid rgba(255, 255, 255, 0.1);
 }

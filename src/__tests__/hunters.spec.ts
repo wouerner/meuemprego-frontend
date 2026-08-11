@@ -13,6 +13,7 @@ vi.mock('@/services/meuemprego-api', () => ({
   },
   accessRequestsApi: {
     listMe: vi.fn(),
+    listSent: vi.fn(),
     send: vi.fn(),
     respond: vi.fn(),
   },

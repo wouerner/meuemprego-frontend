@@ -14,90 +14,195 @@
           </v-col>
           <v-col cols="12" md="4" class="text-md-end">
             <v-btn
-              to="/candidatos"
+              to="/cadastro"
               variant="outlined"
               class="border-glass px-6"
               size="large"
               rounded="pill"
-              prepend-icon="mdi-account-group-outline"
+              prepend-icon="mdi-bullhorn-outline"
             >
-              Ver Vitrine de Perfis
+              Editar Meu Perfil
             </v-btn>
           </v-col>
         </v-row>
       </v-card>
 
-      <v-row v-if="huntersStore.candidateAccessRequests.length > 0">
-        <v-col
-          v-for="req in huntersStore.candidateAccessRequests"
-          :key="req.id"
-          cols="12"
-          md="6"
-        >
-          <v-card class="glass-panel pa-6 rounded-2xl" elevation="0">
-            <div class="d-flex align-start gap-3 mb-4">
-              <v-avatar size="64" class="elevation-4 border-glass">
-                <v-img :src="req.hunterAvatar" :alt="req.hunterName"></v-img>
-              </v-avatar>
-              <div class="flex-grow-1">
-                <h3 class="text-h6 font-weight-bold gradient-text-subtle pa-0 ma-0">
-                  {{ req.hunterName }}
-                </h3>
-                <div class="text-caption text-grey-lighten-1 mb-2">{{ req.hunterHeadline }}</div>
-                <div class="d-flex flex-wrap gap-1 mb-2">
-                  <span
-                    v-for="spec in req.hunterSpecialties"
-                    :key="spec"
-                    class="glass-badge text-caption py-1 px-3"
-                  >
-                    {{ spec }}
-                  </span>
-                </div>
-                <div class="text-caption text-grey">
-                  <v-icon icon="mdi-calendar" size="14" class="mr-1"></v-icon>
-                  Solicitado em {{ req.requestedAt }}
-                </div>
-              </div>
-            </div>
+      <v-card class="glass-panel pa-6 rounded-2xl" elevation="0">
+        <v-tabs v-model="accessTab" color="primary" align-tabs="start">
+          <v-tab value="pending" class="font-weight-bold">
+            <v-badge :content="huntersStore.candidateAccessRequests.length" color="warning" class="mr-2" inline>
+              Pedidos Pendentes
+            </v-badge>
+          </v-tab>
+          <v-tab value="accepted" class="font-weight-bold">
+            <v-badge :content="huntersStore.acceptedAccessRequests.length" color="success" class="mr-2" inline>
+              Hunters Aceitos
+            </v-badge>
+          </v-tab>
+        </v-tabs>
 
-            <div class="glass-panel pa-4 rounded-xl mb-4 bg-surface-variant">
-              <div class="text-caption text-secondary font-weight-bold mb-1">Mensagem do Hunter:</div>
-              <p class="text-body-2 text-grey-lighten-1 mb-0 italic">
-                "{{ req.message }}"
-              </p>
-            </div>
-
-            <div class="d-flex gap-3">
-              <v-btn
-                color="success"
-                variant="flat"
-                rounded="pill"
-                class="flex-grow-1 font-weight-bold"
-                prepend-icon="mdi-check-circle-outline"
-                @click="acceptRequest(req.id)"
+        <v-window v-model="accessTab">
+          <v-window-item value="pending">
+            <v-row v-if="huntersStore.candidateAccessRequests.length > 0" class="pt-4">
+              <v-col
+                v-for="req in huntersStore.candidateAccessRequests"
+                :key="req.id"
+                cols="12"
+                md="6"
               >
-                Aceitar Acesso
-              </v-btn>
-              <v-btn
-                color="error"
-                variant="outlined"
-                rounded="pill"
-                class="font-weight-bold border-glass"
-                prepend-icon="mdi-close-circle-outline"
-                @click="rejectRequest(req.id)"
-              >
-                Recusar
-              </v-btn>
-            </div>
-          </v-card>
-        </v-col>
-      </v-row>
+                <v-card class="glass-panel pa-6 rounded-2xl" elevation="0">
+                  <div class="d-flex align-start gap-3 mb-4">
+                    <v-avatar size="64" class="elevation-4 border-glass">
+                      <v-img :src="req.hunterAvatar" :alt="req.hunterName"></v-img>
+                    </v-avatar>
+                    <div class="flex-grow-1">
+                      <h3 class="text-h6 font-weight-bold gradient-text-subtle pa-0 ma-0">
+                        {{ req.hunterName }}
+                      </h3>
+                      <div class="text-caption text-grey-lighten-1 mb-2">{{ req.hunterHeadline }}</div>
+                      <div class="d-flex flex-wrap gap-1 mb-2">
+                        <span
+                          v-for="spec in req.hunterSpecialties"
+                          :key="spec"
+                          class="glass-badge text-caption py-1 px-3"
+                        >
+                          {{ spec }}
+                        </span>
+                      </div>
+                      <div class="text-caption text-grey">
+                        <v-icon icon="mdi-calendar" size="14" class="mr-1"></v-icon>
+                        Solicitado em {{ req.requestedAt }}
+                      </div>
+                    </div>
+                  </div>
 
-      <v-card v-else class="glass-panel pa-12 text-center rounded-2xl" elevation="0">
-        <v-icon icon="mdi-check-circle-outline" size="64" color="success" class="mb-3"></v-icon>
-        <h3 class="text-h6 font-weight-bold gradient-text-subtle mb-2">Nenhum pedido pendente</h3>
-        <p class="text-body-2 text-grey mb-4">Você não possui solicitações de acesso de Job Hunters no momento.</p>
+                  <div class="glass-panel pa-4 rounded-xl mb-4 bg-surface-variant">
+                    <div class="text-caption text-secondary font-weight-bold mb-1">Mensagem do Hunter:</div>
+                    <p class="text-body-2 text-grey-lighten-1 mb-0 italic">
+                      "{{ req.message }}"
+                    </p>
+                  </div>
+
+                  <div class="d-flex gap-3 flex-wrap">
+                    <v-btn
+                      color="success"
+                      variant="flat"
+                      rounded="pill"
+                      class="flex-grow-1 font-weight-bold"
+                      prepend-icon="mdi-check-circle-outline"
+                      @click="acceptRequest(req.id)"
+                    >
+                      Aceitar Acesso
+                    </v-btn>
+                    <v-btn
+                      color="info"
+                      variant="outlined"
+                      rounded="pill"
+                      class="font-weight-bold border-glass"
+                      prepend-icon="mdi-linkedin"
+                      @click="contactPendingLinkedIn(req)"
+                    >
+                      Ver LinkedIn
+                    </v-btn>
+                    <v-btn
+                      color="error"
+                      variant="outlined"
+                      rounded="pill"
+                      class="font-weight-bold border-glass"
+                      prepend-icon="mdi-close-circle-outline"
+                      @click="rejectRequest(req.id)"
+                    >
+                      Recusar
+                    </v-btn>
+                  </div>
+                </v-card>
+              </v-col>
+            </v-row>
+
+            <v-card v-else class="glass-panel pa-12 text-center rounded-2xl mt-4" elevation="0">
+              <v-icon icon="mdi-check-circle-outline" size="64" color="success" class="mb-3"></v-icon>
+              <h3 class="text-h6 font-weight-bold gradient-text-subtle mb-2">Nenhum pedido pendente</h3>
+              <p class="text-body-2 text-grey mb-4">Você não possui solicitações de acesso de Job Hunters no momento.</p>
+            </v-card>
+          </v-window-item>
+
+          <v-window-item value="accepted">
+            <v-row v-if="huntersStore.acceptedAccessRequests.length > 0" class="pt-4">
+              <v-col
+                v-for="req in huntersStore.acceptedAccessRequests"
+                :key="req.id"
+                cols="12"
+                md="6"
+              >
+                <v-card class="glass-panel pa-6 rounded-2xl" elevation="0">
+                  <div class="d-flex align-start gap-3 mb-4">
+                    <v-avatar size="64" class="elevation-4 border-glass">
+                      <v-img :src="req.hunterAvatar" :alt="req.hunterName"></v-img>
+                    </v-avatar>
+                    <div class="flex-grow-1">
+                      <h3 class="text-h6 font-weight-bold gradient-text-subtle pa-0 ma-0">
+                        {{ req.hunterName }}
+                      </h3>
+                      <div class="text-caption text-grey-lighten-1 mb-2">{{ req.hunterHeadline }}</div>
+                      <div class="d-flex flex-wrap gap-1 mb-2">
+                        <span
+                          v-for="spec in req.hunterSpecialties"
+                          :key="spec"
+                          class="glass-badge text-caption py-1 px-3"
+                        >
+                          {{ spec }}
+                        </span>
+                      </div>
+                      <div class="text-caption text-grey">
+                        <v-icon icon="mdi-check-decagram" size="14" color="success" class="mr-1"></v-icon>
+                        Acesso concedido em {{ req.requestedAt }}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="glass-panel pa-4 rounded-xl mb-4 bg-surface-variant">
+                    <div class="text-caption text-secondary font-weight-bold mb-1">Mensagem do Hunter:</div>
+                    <p class="text-body-2 text-grey-lighten-1 mb-0 italic">
+                      "{{ req.message }}"
+                    </p>
+                  </div>
+
+                  <div class="d-flex gap-2">
+                    <v-btn
+                      color="success"
+                      variant="flat"
+                      rounded="pill"
+                      class="flex-grow-1 font-weight-bold"
+                      prepend-icon="mdi-whatsapp"
+                      @click="openAcceptedWhatsApp(req)"
+                    >
+                      Chamar no WhatsApp
+                    </v-btn>
+                    <v-btn
+                      color="info"
+                      variant="outlined"
+                      rounded="pill"
+                      class="font-weight-bold border-glass"
+                      prepend-icon="mdi-linkedin"
+                      @click="contactAcceptedLinkedIn(req)"
+                    >
+                      LinkedIn
+                    </v-btn>
+                  </div>
+                </v-card>
+              </v-col>
+            </v-row>
+
+            <v-card v-else class="glass-panel pa-12 text-center rounded-2xl mt-4" elevation="0">
+              <v-icon icon="mdi-account-tie-outline" size="64" color="grey" class="mb-3"></v-icon>
+              <h3 class="text-h6 font-weight-bold gradient-text-subtle mb-2">Nenhum Job Hunter aceito ainda</h3>
+              <p class="text-body-2 text-grey mb-4">Quando você aceitar um pedido de acesso, o hunter aparecerá aqui para contato direto.</p>
+            </v-card>
+          </v-window-item>
+        </v-window>
       </v-card>
+
+      <WhatsAppContactModal v-model="showWhatsAppDialog" :target-profile="selectedHunter" target-type="hunter" />
     </template>
 
     <!-- ==================== HUNTER VIEW: Catalog (existing) ==================== -->
@@ -154,7 +259,7 @@
           <v-col cols="12" sm="4" md="3">
             <v-select
               v-model="huntersStore.selectedSpecialty"
-              :items="specialtyOptions"
+              :items="SPECIALTY_OPTIONS"
               label="Especialização"
               variant="outlined"
               density="compact"
@@ -167,7 +272,7 @@
           <v-col cols="12" sm="4" md="3">
             <v-select
               v-model="huntersStore.selectedSeniority"
-              :items="seniorityOptions"
+              :items="SENIORITY_OPTIONS"
               label="Senioridade Atendida"
               variant="outlined"
               density="compact"
@@ -180,7 +285,7 @@
           <v-col cols="12" sm="4" md="2">
             <v-select
               v-model="huntersStore.selectedServiceModel"
-              :items="serviceModelOptions"
+              :items="SERVICE_MODEL_OPTIONS"
               label="Modelo"
               variant="outlined"
               density="compact"
@@ -300,7 +405,8 @@ import { useHuntersStore } from '@/stores/hunters'
 import { useMetricsStore } from '@/stores/metrics'
 import { useAuthStore } from '@/stores/auth'
 import WhatsAppContactModal from '@/components/WhatsAppContactModal.vue'
-import type { HunterProfile } from '@/types'
+import { SPECIALTY_OPTIONS, SENIORITY_OPTIONS, SERVICE_MODEL_OPTIONS } from '@/constants/options'
+import type { HunterProfile, HunterAccessRequest } from '@/types'
 
 const huntersStore = useHuntersStore()
 const metricsStore = useMetricsStore()
@@ -314,6 +420,8 @@ onMounted(() => {
 const page = ref(1)
 const itemsPerPage = ref(6)
 
+const accessTab = ref('pending')
+
 const totalPages = computed(() => Math.ceil(huntersStore.filteredHunters.length / itemsPerPage.value))
 
 const paginatedHunters = computed(() => {
@@ -325,19 +433,6 @@ const paginatedHunters = computed(() => {
 const showWhatsAppDialog = ref(false)
 const showDetailDialog = ref(false)
 const selectedHunter = ref<HunterProfile | null>(null)
-
-const specialtyOptions = [
-  'Tecnologia da Informação',
-  'Produtos & Design',
-  'Finanças',
-  'Vendas / Comercial',
-  'Recursos Humanos',
-  'Carreira Internacional',
-  'Data & Analytics',
-]
-
-const seniorityOptions = ['Junior', 'Pleno', 'Senior', 'Especialista', 'Liderança / C-Level']
-const serviceModelOptions = ['Assessoria Completa', 'Mentoria de Carreira', 'Revisão de LinkedIn/CV', 'Sessão Individual']
 
 function resetFilters() {
   huntersStore.searchQuery = ''
@@ -377,15 +472,23 @@ async function acceptRequest(id: string) {
 async function rejectRequest(id: string) {
   await huntersStore.respondToAccessRequest(id, 'rejected')
 }
-</script>
 
-<style scoped>
-.gap-1 { gap: 4px; }
-.gap-2 { gap: 8px; }
-.gap-3 { gap: 12px; }
-.max-w-650 { max-width: 650px; }
-.border-glass {
-  border: 1px solid rgba(255, 255, 255, 0.15) !important;
-  backdrop-filter: blur(8px);
+function hunterProfileFor(req: HunterAccessRequest): HunterProfile | null {
+  return huntersStore.hunters.find(h => h.id === req.hunterId) || null
 }
-</style>
+
+function openAcceptedWhatsApp(req: HunterAccessRequest) {
+  const hunter = hunterProfileFor(req)
+  if (hunter) openWhatsAppModal(hunter)
+}
+
+async function contactAcceptedLinkedIn(req: HunterAccessRequest) {
+  const hunter = hunterProfileFor(req)
+  if (hunter) await contactHunterLinkedIn(hunter)
+}
+
+async function contactPendingLinkedIn(req: HunterAccessRequest) {
+  const hunter = hunterProfileFor(req)
+  if (hunter) await contactHunterLinkedIn(hunter)
+}
+</script>

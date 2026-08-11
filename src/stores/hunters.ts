@@ -6,6 +6,7 @@ import { huntersApi, accessRequestsApi, type HunterPayload } from '@/services/me
 export const useHuntersStore = defineStore('hunters', () => {
   const hunters = ref<HunterProfile[]>([])
   const accessRequests = ref<HunterAccessRequest[]>([])
+  const sentAccessRequests = ref<HunterAccessRequest[]>([])
   const isLoading = ref(false)
   const loaded = ref(false)
 
@@ -27,11 +28,20 @@ export const useHuntersStore = defineStore('hunters', () => {
     }
   }
 
+  async function fetchSentAccessRequests() {
+    try {
+      sentAccessRequests.value = await accessRequestsApi.listSent()
+    } catch {
+      sentAccessRequests.value = []
+    }
+  }
+
   const candidateAccessRequests = computed(() =>
-    accessRequests.value.filter(r => {
-      const hunter = hunters.value.find(h => h.id === r.hunterId)
-      return r.status === 'pending' && hunter?.status === 'Aprovado'
-    }),
+    accessRequests.value.filter(r => r.status === 'pending'),
+  )
+
+  const acceptedAccessRequests = computed(() =>
+    accessRequests.value.filter(r => r.status === 'accepted'),
   )
 
   async function respondToAccessRequest(id: string, newStatus: AccessRequestStatus) {
@@ -42,7 +52,7 @@ export const useHuntersStore = defineStore('hunters', () => {
 
   async function sendAccessRequest(candidateId: string, message: string) {
     const req = await accessRequestsApi.send(candidateId, message)
-    accessRequests.value.unshift(req)
+    sentAccessRequests.value.unshift(req)
     return req
   }
 
@@ -50,7 +60,7 @@ export const useHuntersStore = defineStore('hunters', () => {
   const searchQuery = ref('')
   const selectedSpecialty = ref<string | null>(null)
   const selectedSeniority = ref<SeniorityLevel | null>(null)
-  const selectedServiceModel = ref<string | null>(null)
+  const selectedServiceModel = ref<HunterProfile['serviceModel'] | null>(null)
 
   // Anti-Duplication Check (RF-008)
   function isCpfRegistered(cpf: string): boolean {
@@ -130,11 +140,14 @@ export const useHuntersStore = defineStore('hunters', () => {
   return {
     hunters,
     accessRequests,
+    sentAccessRequests,
     isLoading,
     loaded,
     fetchHunters,
     fetchAccessRequests,
+    fetchSentAccessRequests,
     candidateAccessRequests,
+    acceptedAccessRequests,
     searchQuery,
     selectedSpecialty,
     selectedSeniority,

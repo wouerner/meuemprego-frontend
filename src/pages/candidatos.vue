@@ -4,11 +4,6 @@
     <v-card class="glass-panel pa-6 pa-md-8 rounded-2xl mb-6" elevation="0">
       <v-row align="center">
         <v-col cols="12" md="8">
-          <div class="d-flex align-center gap-2 mb-2">
-            <span class="glass-badge text-accent">Vitrine de Perfis</span>
-            <span class="glass-badge text-secondary">Profissionais Solicitando Asssessoria</span>
-            <span class="glass-badge text-info">Busca Rápida</span>
-          </div>
           <h1 class="text-h3 font-weight-black gradient-text mb-2">
             Vitrine de Perfis Profissionais
           </h1>
@@ -42,6 +37,28 @@
       Seu perfil de Job Hunter está <strong>{{ currentHunter.status }}</strong>. Enquanto o administrador não aprovar seu cadastro, você não poderá enviar solicitações de acesso aos perfis profissionais.
     </v-alert>
 
+    <!-- Monthly Access Request Limit Warning -->
+    <v-alert
+      v-if="authStore.currentRole === 'hunter' && accessLimitReached"
+      type="error"
+      variant="tonal"
+      rounded="xl"
+      class="mb-6 font-weight-bold"
+      icon="mdi-alert-octagon-outline"
+    >
+      Você atingiu o limite de <strong>{{ MAX_ACCESS_REQUESTS_PER_MONTH }} solicitações de acesso por mês</strong>. O contador reinicia no dia 1º de cada mês.
+    </v-alert>
+    <v-alert
+      v-else-if="authStore.currentRole === 'hunter' && requestsSentThisMonth > 0"
+      type="info"
+      variant="tonal"
+      rounded="xl"
+      class="mb-6 font-weight-bold"
+      icon="mdi-counter"
+    >
+      Solicitações de acesso este mês: <strong>{{ requestsSentThisMonth }} de {{ MAX_ACCESS_REQUESTS_PER_MONTH }}</strong>.
+    </v-alert>
+
     <!-- Filters Section -->
     <v-card class="glass-panel pa-5 rounded-2xl mb-6" elevation="0">
       <v-row density="comfortable" align="center">
@@ -64,7 +81,7 @@
         <v-col cols="12" sm="4" md="3">
           <v-select
             v-model="candidatesStore.selectedArea"
-            :items="areaOptions"
+            :items="AREA_OPTIONS"
             label="Área de Atuação"
             variant="outlined"
             density="compact"
@@ -79,7 +96,7 @@
         <v-col cols="12" sm="4" md="3">
           <v-select
             v-model="candidatesStore.selectedSeniority"
-            :items="seniorityOptions"
+            :items="SENIORITY_OPTIONS"
             label="Senioridade"
             variant="outlined"
             density="compact"
@@ -94,7 +111,7 @@
         <v-col cols="12" sm="4" md="2">
           <v-select
             v-model="candidatesStore.selectedMoment"
-            :items="momentOptions"
+            :items="MOMENT_OPTIONS"
             label="Momento"
             variant="outlined"
             density="compact"
@@ -175,12 +192,14 @@
               rounded="pill"
               class="flex-grow-1 font-weight-bold"
               prepend-icon="mdi-file-document-plus-outline"
+              :disabled="accessLimitReached"
               @click="openAccessRequestDialog(candidate)"
             >
               Solicitar Acesso
             </v-btn>
 
             <v-btn
+              v-if="hasAcceptedAccessTo(candidate.id)"
               flex="1"
               color="success"
               variant="flat"
@@ -328,7 +347,13 @@
 
         <div class="d-flex justify-end gap-2">
           <v-btn variant="text" rounded="pill" @click="showDetailDialog = false">Fechar</v-btn>
-          <v-btn color="success" rounded="pill" prepend-icon="mdi-whatsapp" @click="showDetailDialog = false; openWhatsAppModal(selectedCandidate)">
+          <v-btn
+            v-if="selectedCandidate && hasAcceptedAccessTo(selectedCandidate.id)"
+            color="success"
+            rounded="pill"
+            prepend-icon="mdi-whatsapp"
+            @click="showDetailDialog = false; openWhatsAppModal(selectedCandidate)"
+          >
             Abordar no WhatsApp
           </v-btn>
         </div>
@@ -344,6 +369,7 @@ import { useHuntersStore } from '@/stores/hunters'
 import { useMetricsStore } from '@/stores/metrics'
 import { useAuthStore } from '@/stores/auth'
 import WhatsAppContactModal from '@/components/WhatsAppContactModal.vue'
+import { AREA_OPTIONS, SENIORITY_OPTIONS, MOMENT_OPTIONS } from '@/constants/options'
 import type { CandidateProfile, CandidateStatus } from '@/types'
 
 const candidatesStore = useCandidatesStore()
@@ -354,7 +380,24 @@ const authStore = useAuthStore()
 onMounted(() => {
   if (!candidatesStore.loaded) candidatesStore.fetchCandidates()
   if (!huntersStore.loaded) huntersStore.fetchHunters()
+  if (authStore.currentRole === 'hunter') huntersStore.fetchSentAccessRequests()
 })
+
+// WhatsApp só é liberado após o candidato aceitar o pedido de acesso (LinkedIn fica sempre visível)
+function hasAcceptedAccessTo(candidateId: string): boolean {
+  return huntersStore.sentAccessRequests.some(r => r.status === 'accepted' && r.candidateId === candidateId)
+}
+
+// Limite de 5 solicitações de acesso por mês por Job Hunter
+const MAX_ACCESS_REQUESTS_PER_MONTH = 5
+
+const requestsSentThisMonth = computed(() => {
+  const now = new Date()
+  const yearMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`
+  return huntersStore.sentAccessRequests.filter(r => r.requestedAt.startsWith(yearMonth)).length
+})
+
+const accessLimitReached = computed(() => requestsSentThisMonth.value >= MAX_ACCESS_REQUESTS_PER_MONTH)
 
 const page = ref(1)
 const itemsPerPage = ref(6)
@@ -386,18 +429,6 @@ const isApprovedHunter = computed(() => {
   const hunter = currentHunter.value
   return hunter?.status === 'Aprovado'
 })
-
-const areaOptions = [
-  'Tecnologia da Informação',
-  'Produtos & Design',
-  'Finanças',
-  'Vendas / Comercial',
-  'Recursos Humanos',
-  'Data & Analytics',
-]
-
-const seniorityOptions = ['Junior', 'Pleno', 'Senior', 'Especialista', 'Liderança / C-Level']
-const momentOptions = ['Ativo', 'Em Transição', 'Buscando recolocação', 'Aberto a Propostas']
 
 const rules = {
   required: (v: string) => !!v || 'Campo obrigatório',
@@ -465,13 +496,3 @@ async function sendAccessRequest() {
   }
 }
 </script>
-
-<style scoped>
-.gap-2 { gap: 8px; }
-.gap-3 { gap: 12px; }
-.max-w-650 { max-width: 650px; }
-.border-glass {
-  border: 1px solid rgba(255, 255, 255, 0.15) !important;
-  backdrop-filter: blur(8px);
-}
-</style>

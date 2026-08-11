@@ -173,6 +173,9 @@ export const useAuthStore = defineStore('auth', () => {
     if (token.value && !user.value) {
       await fetchMe()
     }
+    if (token.value && user.value && currentRole.value === 'visitante') {
+      currentRole.value = detectRole(user.value.email)
+    }
     await loadProfiles()
   }
 
@@ -245,6 +248,7 @@ export const useAuthStore = defineStore('auth', () => {
     init,
     loadProfiles,
     setRole,
+    detectRole,
     updateCandidateProfile,
     toggleCandidateContactRequest,
     updateHunterProfile,

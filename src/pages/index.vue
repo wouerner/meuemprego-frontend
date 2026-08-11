@@ -227,11 +227,6 @@ function navigateToRegister(role: 'candidato' | 'hunter') {
 </script>
 
 <style scoped>
-.gap-2 { gap: 8px; }
-.gap-3 { gap: 12px; }
-.gap-4 { gap: 16px; }
-.max-w-600 { max-width: 600px; }
-.max-w-650 { max-width: 650px; }
 .leading-tight { line-height: 1.15; }
 
 .hero-cta-btn {
@@ -252,10 +247,6 @@ function navigateToRegister(role: 'candidato' | 'hunter') {
   }
 }
 
-.border-glass {
-  border: 1px solid rgba(255, 255, 255, 0.18) !important;
-  backdrop-filter: blur(10px);
-}
 .border-primary-glow {
   border: 1px solid rgba(139, 92, 246, 0.4) !important;
   box-shadow: 0 0 30px rgba(139, 92, 246, 0.15) !important;

@@ -252,12 +252,3 @@ async function approveAllPendingHunters() {
   }
 }
 </script>
-
-<style scoped>
-.gap-2 { gap: 8px; }
-.gap-3 { gap: 12px; }
-.max-w-650 { max-width: 650px; }
-.border-glass {
-  border: 1px solid rgba(255, 255, 255, 0.12) !important;
-}
-</style>

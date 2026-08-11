@@ -23,7 +23,7 @@ const router = createRouter({
     {
       path: '/candidatos',
       name: 'CandidatesTalentPool',
-      meta: { requiresAuth: true },
+      meta: { requiresAuth: true, requiresRole: ['admin', 'hunter'] as const },
       component: () => import('@/pages/candidatos.vue'),
     },
     {
@@ -34,23 +34,32 @@ const router = createRouter({
     {
       path: '/admin',
       name: 'AdminModeration',
-      meta: { requiresAuth: true },
+      meta: { requiresAuth: true, requiresRole: ['admin'] as const },
       component: () => import('@/pages/admin.vue'),
     },
     {
       path: '/metricas',
       name: 'TraractionMetrics',
-      meta: { requiresAuth: true },
+      meta: { requiresAuth: true, requiresRole: ['admin'] as const },
       component: () => import('@/pages/metricas.vue'),
     },
   ],
 })
 
 router.beforeEach((to, _from, next) => {
+  const auth = useAuthStore()
   if (to.meta.requiresAuth) {
-    const auth = useAuthStore()
     if (!auth.isAuthenticated) {
       return next('/login')
+    }
+  }
+  const requiredRoles = to.meta.requiresRole as readonly string[] | undefined
+  if (requiredRoles && requiredRoles.length > 0) {
+    const role = auth.currentRole === 'visitante' && auth.user
+      ? auth.detectRole(auth.user.email)
+      : auth.currentRole
+    if (!requiredRoles.includes(role)) {
+      return next('/')
     }
   }
   next()

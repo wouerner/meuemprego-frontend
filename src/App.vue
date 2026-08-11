@@ -307,7 +307,11 @@ const roleChipIcon = computed(() => {
 })
 
 const menuItems = computed(() => {
-  const isCandidate = authStore.currentRole === 'candidato'
+  const role = authStore.currentRole === 'visitante' && authStore.user
+    ? authStore.detectRole(authStore.user.email)
+    : authStore.currentRole
+  const isCandidate = role === 'candidato'
+  const canAccessVitrine = role === 'admin' || role === 'hunter'
   return [
     { title: 'Início (Landing Page)', icon: 'mdi-home-outline', to: '/' },
     ...(authStore.isAuthenticated ? [] : [{ title: 'Entrar na Conta', icon: 'mdi-login', to: '/login' }]),
@@ -316,27 +320,23 @@ const menuItems = computed(() => {
       icon: isCandidate ? 'mdi-file-document-outline' : 'mdi-account-search-outline',
       to: '/hunters',
     },
-    { title: 'Vitrine de Profissionais', icon: 'mdi-account-group-outline', to: '/candidatos' },
+    ...(canAccessVitrine
+      ? [{ title: 'Vitrine de Profissionais', icon: 'mdi-account-group-outline', to: '/candidatos' }]
+      : []),
     { title: 'Meu Perfil Profissional', icon: 'mdi-card-account-details-outline', to: '/cadastro' },
-    { title: 'Painel do Administrador', icon: 'mdi-shield-check-outline', to: '/admin' },
-    { title: 'Métricas de Transbordo', icon: 'mdi-chart-line-variant', to: '/metricas' },
+    ...(role === 'admin'
+      ? [{ title: 'Painel do Administrador', icon: 'mdi-shield-check-outline', to: '/admin' }]
+      : []),
+    ...(role === 'admin'
+      ? [{ title: 'Métricas de Transbordo', icon: 'mdi-chart-line-variant', to: '/metricas' }]
+      : []),
   ]
 })
 </script>
 
 <style scoped>
-.gap-3 {
-  gap: 12px;
-}
-.gap-4 {
-  gap: 16px;
-}
 .tracking-wider {
   letter-spacing: 0.8px;
-}
-.border-glass {
-  border: 1px solid rgba(255, 255, 255, 0.15) !important;
-  backdrop-filter: blur(8px);
 }
 .glass-footer {
   background: rgba(15, 23, 42, 0.6) !important;

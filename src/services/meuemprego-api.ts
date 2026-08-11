@@ -161,6 +161,10 @@ export const accessRequestsApi = {
     const { data } = await api.get('/access-requests/me')
     return (data as any[]).map(mapAccessRequest)
   },
+  listSent: async (): Promise<HunterAccessRequest[]> => {
+    const { data } = await api.get('/access-requests/sent')
+    return (data as any[]).map(mapAccessRequest)
+  },
   send: async (candidateId: string, message: string): Promise<HunterAccessRequest> => {
     const { data } = await api.post('/access-requests', { candidate_id: Number(candidateId), message })
     return mapAccessRequest(data)
