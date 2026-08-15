@@ -159,7 +159,7 @@
               Encontre seu Job Hunter Ideal
             </h1>
             <p class="text-subtitle-1 text-grey-lighten-1 mb-0 mx-auto mx-md-0 max-w-650">
-              Conecte-se diretamente via LinkedIn ou WhatsApp com consultores de carreira especializados na sua área e nível de senioridade.
+              Conecte-se diretamente via LinkedIn ou WhatsApp com Job Hunters especializados na sua área e nível de senioridade.
             </p>
           </v-col>
           <v-col cols="12" md="4" class="text-md-end mt-4 mt-md-0">

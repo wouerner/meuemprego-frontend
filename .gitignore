@@ -24,6 +24,12 @@ coverage
 *.sln
 *.sw?
 
+# Playwright
+e2e/*.spec.ts-snapshots/
+playwright-report
+test-results
+blob-report
+
 *.tsbuildinfo
 
 # Local environment files

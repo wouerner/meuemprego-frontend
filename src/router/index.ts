@@ -6,8 +6,18 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      name: 'LandingPageHome',
+      name: 'LandingSelector',
       component: () => import('@/pages/index.vue'),
+    },
+    {
+      path: '/profissional',
+      name: 'ProfessionalLanding',
+      component: () => import('@/pages/landing-profissional.vue'),
+    },
+    {
+      path: '/job-hunter',
+      name: 'HunterLanding',
+      component: () => import('@/pages/landing-hunter.vue'),
     },
     {
       path: '/login',
@@ -29,6 +39,11 @@ const router = createRouter({
       path: '/cadastro',
       name: 'UserProfileForm',
       component: () => import('@/pages/cadastro.vue'),
+    },
+    {
+      path: '/cadastro-hunter',
+      name: 'HunterProfileRegistration',
+      component: () => import('@/pages/cadastro-hunter.vue'),
     },
     {
       path: '/perfil-hunter',
