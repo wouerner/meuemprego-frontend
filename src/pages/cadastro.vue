@@ -2,17 +2,17 @@
   <div>
     <!-- Header Banner -->
     <v-card class="glass-panel pa-6 pa-md-8 rounded-2xl mb-6" elevation="0">
-      <v-row align="center">
+      <v-row align="center" class="text-center text-md-start">
         <v-col cols="12" md="8">
           <h1 class="text-h3 font-weight-black gradient-text mb-2">
             Gestão de Perfil Profissional
           </h1>
-          <p class="text-subtitle-1 text-grey-lighten-1 mb-0 max-w-650">
-            Cadastre seu perfil profissional ou de consultor gratuitamente. Preencha seu e-mail e crie uma senha segura para gerenciar sua conta no meuemprego.pro.
+          <p class="text-subtitle-1 text-grey-lighten-1 mb-0 mx-auto mx-md-0 max-w-650">
+            Monte seu perfil profissional gratuitamente e fique visível para os melhores Job Hunters do mercado. Preencha seus dados e crie uma senha segura para gerenciar sua conta no meuemprego.pro.
           </p>
         </v-col>
-        <v-col cols="12" md="4" class="text-md-end">
-          <v-chip-group v-model="profileType" mandatory color="primary" class="d-inline-flex">
+        <v-col cols="12" md="4" class="text-md-end mt-4 mt-md-0">
+          <v-chip-group v-model="profileType" mandatory color="primary" class="d-inline-flex justify-center justify-md-end w-100 w-md-auto">
             <v-chip value="candidato" filter class="font-weight-bold">Perfil Profissional</v-chip>
           </v-chip-group>
         </v-col>
@@ -32,7 +32,7 @@
                 <div class="text-caption text-grey">Preencha os campos obrigatórios (*) para criar seu login e cadastrar seu perfil.</div>
               </div>
               <v-avatar color="primary" size="48">
-                <v-icon icon="mdi-account-school" size="28"></v-icon>
+                <v-icon icon="mdi-card-account-details-outline" size="28"></v-icon>
               </v-avatar>
             </div>
 

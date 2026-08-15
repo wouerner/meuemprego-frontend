@@ -103,7 +103,7 @@
         <v-window-item value="pendingHunters">
           <div v-if="huntersStore.pendingHunters.length > 0">
             <v-card
-              v-for="hunter in huntersStore.pendingHunters"
+              v-for="hunter in paginatedPendingHunters"
               :key="hunter.id"
               class="glass-panel pa-5 rounded-xl mb-4 border-glass"
               elevation="0"
@@ -111,9 +111,6 @@
               <v-row align="center">
                 <v-col cols="12" md="7">
                   <div class="d-flex align-center gap-3">
-                    <v-avatar size="56" class="elevation-3">
-                      <v-img :src="hunter.avatar"></v-img>
-                    </v-avatar>
                     <div>
                       <h3 class="text-subtitle-1 font-weight-bold text-white pa-0 ma-0">{{ hunter.name }}</h3>
                       <div class="text-caption text-grey">{{ hunter.email }} • {{ hunter.serviceModel }}</div>
@@ -166,6 +163,10 @@
             <h3 class="text-h6 font-weight-bold text-white mb-1">Nenhuma pendência de curadoria</h3>
             <p class="text-caption text-grey">Todos os cadastros de Job Hunters já foram validados.</p>
           </div>
+
+          <div v-if="pendingHuntersTotalPages > 1" class="d-flex justify-center mt-4">
+            <v-pagination v-model="pendingHuntersPage" :length="pendingHuntersTotalPages" rounded="circle" active-color="primary" color="white" elevation="0" class="glass-panel pa-1 rounded-pill"></v-pagination>
+          </div>
         </v-window-item>
 
         <!-- TAB 2: PROFESSIONAL PROFILES MODERATION -->
@@ -181,12 +182,9 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="cand in candidatesStore.candidates" :key="cand.id">
+              <tr v-for="cand in paginatedCandidates" :key="cand.id">
                 <td>
-                  <div class="d-flex align-center gap-2 py-2">
-                    <v-avatar size="36">
-                      <v-img :src="cand.avatar"></v-img>
-                    </v-avatar>
+                  <div class="d-flex align-center py-2">
                     <div>
                       <div class="font-weight-bold text-white">{{ cand.name }}</div>
                       <div class="text-caption text-grey">{{ cand.email }}</div>
@@ -218,6 +216,10 @@
               </tr>
             </tbody>
           </v-table>
+
+          <div v-if="candidatesTotalPages > 1" class="d-flex justify-center mt-4">
+            <v-pagination v-model="candidatesPage" :length="candidatesTotalPages" rounded="circle" active-color="primary" color="white" elevation="0" class="glass-panel pa-1 rounded-pill"></v-pagination>
+          </div>
         </v-window-item>
       </v-window>
     </v-card>
@@ -225,13 +227,31 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useHuntersStore } from '@/stores/hunters'
 import { useCandidatesStore } from '@/stores/candidates'
 
 const tab = ref('pendingHunters')
 const huntersStore = useHuntersStore()
 const candidatesStore = useCandidatesStore()
+
+const pendingHuntersPage = ref(1)
+const pendingHuntersPerPage = 5
+const candidatesPage = ref(1)
+const candidatesPerPage = 5
+
+const pendingHuntersTotalPages = computed(() => Math.ceil(huntersStore.pendingHunters.length / pendingHuntersPerPage))
+const candidatesTotalPages = computed(() => Math.ceil(candidatesStore.candidates.length / candidatesPerPage))
+
+const paginatedPendingHunters = computed(() => {
+  const start = (pendingHuntersPage.value - 1) * pendingHuntersPerPage
+  return huntersStore.pendingHunters.slice(start, start + pendingHuntersPerPage)
+})
+
+const paginatedCandidates = computed(() => {
+  const start = (candidatesPage.value - 1) * candidatesPerPage
+  return candidatesStore.candidates.slice(start, start + candidatesPerPage)
+})
 
 onMounted(() => {
   if (!huntersStore.loaded) huntersStore.fetchHunters()

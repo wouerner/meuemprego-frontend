@@ -17,7 +17,6 @@ const router = createRouter({
     {
       path: '/hunters',
       name: 'HuntersCatalog',
-      meta: { requiresAuth: true },
       component: () => import('@/pages/hunters.vue'),
     },
     {
@@ -30,6 +29,12 @@ const router = createRouter({
       path: '/cadastro',
       name: 'UserProfileForm',
       component: () => import('@/pages/cadastro.vue'),
+    },
+    {
+      path: '/perfil-hunter',
+      name: 'HunterProfileForm',
+      meta: { requiresAuth: true, requiresRole: ['hunter'] as const },
+      component: () => import('@/pages/perfil-hunter.vue'),
     },
     {
       path: '/admin',

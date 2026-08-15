@@ -2,19 +2,19 @@
   <div>
     <!-- Header Banner -->
     <v-card class="glass-panel pa-6 pa-md-8 rounded-2xl mb-6" elevation="0">
-      <v-row align="center">
+      <v-row align="center" class="text-center text-md-start">
         <v-col cols="12" md="8">
           <h1 class="text-h3 font-weight-black gradient-text mb-2">
             Vitrine de Perfis Profissionais
           </h1>
-          <p class="text-subtitle-1 text-grey-lighten-1 mb-0 max-w-650">
+          <p class="text-subtitle-1 text-grey-lighten-1 mb-0 mx-auto mx-md-0 max-w-650">
             Lista de profissionais em busca de acelerar ou redirecionar a carreira. Job Hunters credenciados podem iniciar contato direto via LinkedIn ou WhatsApp.
           </p>
         </v-col>
-        <v-col cols="12" md="4" class="text-md-end">
+        <v-col cols="12" md="4" class="text-md-end mt-4 mt-md-0">
           <v-btn
             to="/cadastro"
-            class="glass-btn-primary px-6"
+            class="glass-btn-primary px-6 w-100 w-md-auto"
             size="large"
             rounded="pill"
             prepend-icon="mdi-bullhorn-outline"
@@ -166,10 +166,7 @@
           lg="4"
         >
           <v-card class="glass-panel glass-panel-hover pa-6 rounded-2xl h-100 d-flex flex-column" elevation="0">
-            <div class="d-flex align-start gap-3 mb-4">
-              <v-avatar size="64" class="elevation-4 border-glass cursor-pointer" @click="openDetailModal(candidate)">
-                <v-img :src="candidate.avatar" :alt="candidate.name"></v-img>
-              </v-avatar>
+            <div class="d-flex align-start mb-4">
               <div class="flex-grow-1">
                 <h3
                   class="text-h6 font-weight-bold gradient-text-subtle pa-0 ma-0 cursor-pointer"
@@ -205,7 +202,7 @@
             <v-divider class="my-3 opacity-20"></v-divider>
   
             <!-- Contact Buttons for Job Hunters -->
-            <div class="d-flex flex-wrap gap-2">
+            <div class="d-flex flex-column flex-sm-row gap-2 w-100">
               <v-btn
                 v-if="isApprovedHunter"
                 color="primary"
@@ -219,24 +216,24 @@
                 Solicitar Acesso
               </v-btn>
   
-              <v-btn
-                v-if="hasAcceptedAccessTo(candidate.id)"
-                flex="1"
-                color="success"
-                variant="flat"
-                rounded="pill"
-                class="flex-grow-1 font-weight-bold"
-                prepend-icon="mdi-whatsapp"
-                @click="openWhatsAppModal(candidate)"
-              >
-                Abordar no WhatsApp
-              </v-btn>
+              <div v-if="hasAcceptedAccessTo(candidate.id)" class="d-flex flex-column flex-sm-row gap-2 w-100">
+                <v-btn
+                  color="success"
+                  variant="flat"
+                  rounded="pill"
+                  class="flex-grow-1 font-weight-bold w-100"
+                  prepend-icon="mdi-whatsapp"
+                  @click="openWhatsAppModal(candidate)"
+                >
+                  WhatsApp
+                </v-btn>
+              </div>
   
               <v-btn
                 color="info"
                 variant="outlined"
                 rounded="pill"
-                class="font-weight-bold border-glass"
+                class="flex-grow-1 font-weight-bold border-glass w-100"
                 prepend-icon="mdi-linkedin"
                 @click="contactCandidateLinkedIn(candidate)"
               >
@@ -248,6 +245,7 @@
                 variant="text"
                 size="small"
                 title="Ver detalhes"
+                class="align-self-end align-self-sm-auto"
                 @click="openDetailModal(candidate)"
               ></v-btn>
             </div>
@@ -312,16 +310,13 @@
           >
             <v-row v-if="sentRequestsByStatus(status).length > 0" class="pt-4">
               <v-col
-                v-for="req in sentRequestsByStatus(status)"
+                v-for="req in paginatedSentRequestsByStatus(status)"
                 :key="req.id"
                 cols="12"
                 md="6"
               >
                 <v-card class="glass-panel pa-6 rounded-2xl" elevation="0">
-                  <div class="d-flex align-start gap-3 mb-4">
-                    <v-avatar size="64" class="elevation-4 border-glass">
-                      <v-img :src="candidateFor(req)?.avatar" :alt="candidateFor(req)?.name"></v-img>
-                    </v-avatar>
+                  <div class="d-flex align-start mb-4">
                     <div class="flex-grow-1">
                       <h3 class="text-h6 font-weight-bold gradient-text-subtle pa-0 ma-0">
                         {{ candidateFor(req)?.name || 'Perfil Profissional' }}
@@ -329,7 +324,7 @@
                       <div class="text-caption text-grey-lighten-1 mb-1">{{ candidateFor(req)?.headline }}</div>
                       <div class="text-caption text-grey">
                         <v-icon icon="mdi-calendar" size="14" class="mr-1"></v-icon>
-                        Solicitado em {{ req.requestedAt }}
+                        Solicitado em {{ formatDateBR(req.requestedAt) }}
                       </div>
                     </div>
                   </div>
@@ -339,7 +334,7 @@
                     <p class="text-body-2 text-grey-lighten-1 mb-0 italic">"{{ req.message }}"</p>
                   </div>
 
-                  <div v-if="status === 'accepted'" class="d-flex gap-2">
+                  <div v-if="status === 'accepted'" class="d-flex flex-column flex-sm-row gap-2">
                     <v-btn
                       color="success"
                       variant="flat"
@@ -348,13 +343,13 @@
                       prepend-icon="mdi-whatsapp"
                       @click="whatsappFromRequest(req)"
                     >
-                      Abordar no WhatsApp
+                      WhatsApp
                     </v-btn>
                     <v-btn
                       color="info"
                       variant="outlined"
                       rounded="pill"
-                      class="font-weight-bold border-glass"
+                      class="flex-grow-1 font-weight-bold border-glass"
                       prepend-icon="mdi-linkedin"
                       @click="linkedinFromRequest(req)"
                     >
@@ -379,6 +374,19 @@
                 Ver Vitrine
               </v-btn>
             </v-card>
+
+            <div v-if="sentRequestsTotalPages(status) > 1" class="d-flex justify-center mt-6">
+              <v-pagination
+                :model-value="sentRequestsPage[status]"
+                @update:model-value="setSentRequestsPage(status, $event)"
+                :length="sentRequestsTotalPages(status)"
+                rounded="circle"
+                active-color="primary"
+                color="white"
+                elevation="0"
+                class="glass-panel pa-1 rounded-pill"
+              ></v-pagination>
+            </div>
           </v-window-item>
         </v-window>
       </v-window-item>
@@ -446,14 +454,9 @@
     <v-dialog v-model="showDetailDialog" max-width="600">
       <v-card class="glass-panel pa-6 rounded-2xl" elevation="0" v-if="selectedCandidate">
         <div class="d-flex align-center justify-space-between mb-4">
-          <div class="d-flex align-center gap-3">
-            <v-avatar size="64" class="elevation-4">
-              <v-img :src="selectedCandidate.avatar"></v-img>
-            </v-avatar>
-            <div>
-              <h3 class="text-h6 font-weight-bold gradient-text pa-0 ma-0">{{ selectedCandidate.name }}</h3>
-              <div class="text-caption text-grey">{{ selectedCandidate.area }} • {{ selectedCandidate.seniority }}</div>
-            </div>
+          <div>
+            <h3 class="text-h6 font-weight-bold gradient-text pa-0 ma-0">{{ selectedCandidate.name }}</h3>
+            <div class="text-caption text-grey">{{ selectedCandidate.area }} • {{ selectedCandidate.seniority }}</div>
           </div>
           <v-btn icon="mdi-close" variant="text" size="small" @click="showDetailDialog = false"></v-btn>
         </div>
@@ -477,7 +480,7 @@
             prepend-icon="mdi-whatsapp"
             @click="showDetailDialog = false; openWhatsAppModal(selectedCandidate)"
           >
-            Abordar no WhatsApp
+            WhatsApp
           </v-btn>
         </div>
       </v-card>
@@ -494,6 +497,7 @@ import { useAuthStore } from '@/stores/auth'
 import WhatsAppContactModal from '@/components/WhatsAppContactModal.vue'
 import { AREA_OPTIONS, SENIORITY_OPTIONS, MOMENT_OPTIONS } from '@/constants/options'
 import type { CandidateProfile, CandidateStatus, HunterAccessRequest, AccessRequestStatus } from '@/types'
+import { formatDateBR } from '@/types'
 
 const candidatesStore = useCandidatesStore()
 const huntersStore = useHuntersStore()
@@ -523,9 +527,26 @@ const requestsSentThisMonth = computed(() => {
 const accessLimitReached = computed(() => requestsSentThisMonth.value >= MAX_ACCESS_REQUESTS_PER_MONTH)
 
 const page = ref(1)
-const itemsPerPage = ref(6)
+const itemsPerPage = ref(5)
 const pageTab = ref('vitrine')
 const sentTab = ref('pending')
+
+const sentRequestsPage = ref<Record<AccessRequestStatus, number>>({ pending: 1, accepted: 1, rejected: 1 })
+const sentRequestsPerPage = 5
+
+function setSentRequestsPage(status: AccessRequestStatus, value: number | null) {
+  if (value && value > 0) sentRequestsPage.value[status] = value
+}
+
+function sentRequestsTotalPages(status: AccessRequestStatus): number {
+  return Math.ceil(sentRequestsByStatus(status).length / sentRequestsPerPage)
+}
+
+function paginatedSentRequestsByStatus(status: AccessRequestStatus): HunterAccessRequest[] {
+  const list = sentRequestsByStatus(status)
+  const start = (sentRequestsPage.value[status] - 1) * sentRequestsPerPage
+  return list.slice(start, start + sentRequestsPerPage)
+}
 
 const totalPages = computed(() => Math.ceil(candidatesStore.filteredCandidates.length / itemsPerPage.value))
 

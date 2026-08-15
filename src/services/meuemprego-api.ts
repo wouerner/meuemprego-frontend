@@ -6,7 +6,6 @@ export interface CandidatePayload {
   cpf: string
   email: string
   password?: string
-  avatar: string
   headline: string
   seniority: string
   area: string
@@ -23,7 +22,6 @@ export interface HunterPayload {
   cpf: string
   email: string
   password?: string
-  avatar: string
   headline: string
   bio: string
   specialties: string[]
@@ -40,7 +38,6 @@ function mapCandidate(data: any): CandidateProfile {
     name: data.name,
     cpf: data.cpf,
     email: data.email,
-    avatar: data.avatar || '',
     headline: data.headline || '',
     seniority: data.seniority,
     area: data.area,
@@ -62,7 +59,6 @@ function mapHunter(data: any): HunterProfile {
     name: data.name,
     cpf: data.cpf,
     email: data.email,
-    avatar: data.avatar || '',
     headline: data.headline || '',
     bio: data.bio || '',
     specialties: data.specialties || [],
@@ -83,7 +79,6 @@ function mapAccessRequest(data: any): HunterAccessRequest {
     hunterId: String(data.hunter_id),
     candidateId: data.candidate_id ? String(data.candidate_id) : undefined,
     hunterName: data.hunter_name,
-    hunterAvatar: data.hunter_avatar || '',
     hunterHeadline: data.hunter_headline || '',
     hunterSpecialties: data.hunter_specialties || [],
     message: data.message,

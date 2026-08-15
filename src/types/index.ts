@@ -7,7 +7,6 @@ export interface BaseProfile {
   name: string
   cpf: string
   email: string
-  avatar: string
   headline: string
   linkedInUrl: string
   whatsappNumber: string
@@ -95,7 +94,6 @@ export interface HunterAccessRequest {
   hunterId: string
   candidateId?: string
   hunterName: string
-  hunterAvatar: string
   hunterHeadline: string
   hunterSpecialties: string[]
   message: string
@@ -110,4 +108,12 @@ export function formatCPF(cpf: string): string {
     .replace(/(\d{3})(\d)/, '$1.$2')
     .replace(/(\d{3})(\d)/, '$1.$2')
     .replace(/(\d{3})(\d{1,2})$/, '$1-$2')
+}
+
+export function formatDateBR(dateStr: string): string {
+  if (!dateStr) return ''
+  const clean = dateStr.slice(0, 10)
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(clean)) return dateStr
+  const [year, month, day] = clean.split('-')
+  return `${day}/${month}/${year}`
 }

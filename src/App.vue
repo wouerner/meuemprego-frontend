@@ -74,6 +74,20 @@
             <v-list-item-title class="font-weight-medium">{{ item.title }}</v-list-item-title>
           </v-list-item>
         </v-list>
+
+        <!-- Sidebar Logout -->
+        <v-list-item
+          v-if="authStore.isAuthenticated"
+          color="error"
+          rounded="xl"
+          class="mt-2"
+          @click="handleLogout"
+        >
+          <template #prepend>
+            <v-icon icon="mdi-logout" class="mr-3"></v-icon>
+          </template>
+          <v-list-item-title class="font-weight-bold">Sair da Conta</v-list-item-title>
+        </v-list-item>
       </v-navigation-drawer>
 
       <!-- Glass Top App Bar -->
@@ -174,8 +188,9 @@
           <v-icon :icon="isDark ? 'mdi-weather-night' : 'mdi-weather-sunny'" color="warning"></v-icon>
         </v-btn>
 
-        <!-- Metrics Link Badge -->
+        <!-- Metrics Link Badge (Apenas para Admin logado) -->
         <v-btn
+          v-if="authStore.isAuthenticated && authStore.currentRole === 'admin'"
           icon
           variant="text"
           to="/metricas"
@@ -198,8 +213,8 @@
           >
             Sair
           </v-btn>
-          <v-avatar color="primary" size="40" class="cursor-pointer elevation-4" to="/cadastro">
-            <v-img :src="authStore.currentUser?.avatar || ''" alt="User"></v-img>
+          <v-avatar color="primary" size="40" class="cursor-pointer elevation-4" :to="profileRoute">
+            <v-icon icon="mdi-account" color="white"></v-icon>
           </v-avatar>
         </template>
       </v-app-bar>
@@ -306,28 +321,38 @@ const roleChipIcon = computed(() => {
   return 'mdi-account-school'
 })
 
+const profileRoute = computed(() => {
+  const role = authStore.currentRole === 'visitante' && authStore.user
+    ? authStore.detectRole(authStore.user.email)
+    : authStore.currentRole
+  return role === 'candidato' ? '/cadastro' : role === 'hunter' ? '/perfil-hunter' : '/admin'
+})
+
 const menuItems = computed(() => {
   const role = authStore.currentRole === 'visitante' && authStore.user
     ? authStore.detectRole(authStore.user.email)
     : authStore.currentRole
   const isCandidate = role === 'candidato'
   const canAccessVitrine = role === 'admin' || role === 'hunter'
+  
   return [
-    { title: 'Início (Landing Page)', icon: 'mdi-home-outline', to: '/' },
+    { title: 'Início', icon: 'mdi-home-outline', to: '/' },
     ...(authStore.isAuthenticated ? [] : [{ title: 'Entrar na Conta', icon: 'mdi-login', to: '/login' }]),
     {
-      title: isCandidate ? 'Meus Pedidos de Acesso' : 'Catálogo de Job Hunters',
-      icon: isCandidate ? 'mdi-file-document-outline' : 'mdi-account-search-outline',
+      title: (isCandidate && authStore.isAuthenticated) ? 'Meus Pedidos de Acesso' : 'Catálogo de Job Hunters',
+      icon: (isCandidate && authStore.isAuthenticated) ? 'mdi-file-document-outline' : 'mdi-account-search-outline',
       to: '/hunters',
     },
-    ...(canAccessVitrine
+    ...((canAccessVitrine && authStore.isAuthenticated)
       ? [{ title: 'Vitrine de Profissionais', icon: 'mdi-account-group-outline', to: '/candidatos' }]
       : []),
-    { title: 'Meu Perfil Profissional', icon: 'mdi-card-account-details-outline', to: '/cadastro' },
-    ...(role === 'admin'
+    ...(authStore.isAuthenticated 
+      ? [{ title: 'Meu Perfil', icon: 'mdi-card-account-details-outline', to: profileRoute.value }] 
+      : []),
+    ...((role === 'admin' && authStore.isAuthenticated)
       ? [{ title: 'Painel do Administrador', icon: 'mdi-shield-check-outline', to: '/admin' }]
       : []),
-    ...(role === 'admin'
+    ...((role === 'admin' && authStore.isAuthenticated)
       ? [{ title: 'Métricas de Transbordo', icon: 'mdi-chart-line-variant', to: '/metricas' }]
       : []),
   ]

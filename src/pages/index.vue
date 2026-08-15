@@ -54,8 +54,8 @@
             <!-- JOB HUNTER SAMPLE CARD (OCULTO TEMPORARIAMENTE)
             <div class="glass-mini-card pa-4 rounded-xl mb-3 text-start">
               <div class="d-flex align-center gap-3">
-                <v-avatar size="48">
-                  <v-img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=150&q=80"></v-img>
+                <v-avatar size="48" color="secondary">
+                  <v-icon icon="mdi-account-tie" color="white" size="24"></v-icon>
                 </v-avatar>
                 <div>
                   <div class="text-subtitle-2 font-weight-bold text-white pa-0 ma-0">Juliana Mendes</div>
@@ -70,14 +70,9 @@
             -->
 
             <div class="glass-mini-card pa-4 rounded-xl text-start">
-              <div class="d-flex align-center gap-3">
-                <v-avatar size="44" size-sm="48">
-                  <v-img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80"></v-img>
-                </v-avatar>
-                <div>
-                  <div class="text-subtitle-2 font-weight-bold text-white pa-0 ma-0">Carlos Eduardo</div>
-                  <div class="text-caption text-grey">Engenheiro Staff (Perfil Profissional)</div>
-                </div>
+              <div>
+                <div class="text-subtitle-2 font-weight-bold text-white pa-0 ma-0">Carlos Eduardo</div>
+                <div class="text-caption text-grey">Engenheiro Staff (Perfil Profissional)</div>
               </div>
               <div class="d-flex align-center justify-space-between mt-3 flex-wrap gap-2">
                 <span class="text-caption text-secondary">Opt-in Vitrine Ativo</span>
@@ -132,10 +127,7 @@
         <!-- Coluna Perfis Profissionais -->
         <v-col cols="12" md="8">
           <div class="glass-panel pa-5 pa-sm-6 rounded-2xl h-100 border-primary-glow">
-            <div class="d-flex align-center gap-3 mb-4">
-              <v-avatar color="primary" size="40" size-sm="48">
-                <v-icon icon="mdi-account-school" color="white" size="22" size-sm="26"></v-icon>
-              </v-avatar>
+            <div class="mb-4">
               <div>
                 <h3 class="text-subtitle-1 text-sm-h6 font-weight-bold text-white pa-0 ma-0">Para Perfis Profissionais</h3>
                 <span class="text-caption text-secondary">Busque ou seja encontrado</span>
@@ -157,7 +149,13 @@
               </v-timeline-item>
             </v-timeline>
 
-            <v-btn to="/candidatos" block class="glass-btn-primary mt-4 hero-cta-btn" rounded="pill">
+            <v-btn
+              v-if="authStore.isAuthenticated && (authStore.currentRole === 'hunter' || authStore.currentRole === 'admin')"
+              to="/candidatos" 
+              block 
+              class="glass-btn-primary mt-4 hero-cta-btn" 
+              rounded="pill"
+            >
               Ver Vitrine de Profissionais
             </v-btn>
           </div>

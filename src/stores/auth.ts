@@ -12,7 +12,6 @@ function emptyCandidateProfile(): CandidateProfile {
     cpf: '',
     email: '',
     password: '',
-    avatar: '',
     headline: '',
     seniority: 'Pleno',
     area: '',
@@ -34,7 +33,6 @@ function emptyHunterProfile(): HunterProfile {
     cpf: '',
     email: '',
     password: '',
-    avatar: '',
     headline: '',
     bio: '',
     specialties: [],
@@ -86,7 +84,6 @@ export const useAuthStore = defineStore('auth', () => {
         id: String(user.value.id),
         name: user.value.name,
         email: user.value.email,
-        avatar: profile.avatar || '',
         headline: profile.headline || '',
         linkedInUrl: profile.linkedInUrl || '',
         whatsappNumber: profile.whatsappNumber || '',
@@ -101,7 +98,6 @@ export const useAuthStore = defineStore('auth', () => {
       name: 'Administrador da Plataforma',
       cpf: '000.000.000-00',
       email: 'admin@meuemprego.pro',
-      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=250&q=80',
     }
   })
 
@@ -192,7 +188,6 @@ export const useAuthStore = defineStore('auth', () => {
       cpf: merged.cpf,
       email: merged.email,
       password: merged.password || undefined,
-      avatar: merged.avatar,
       headline: merged.headline,
       seniority: merged.seniority,
       area: merged.area,
@@ -219,7 +214,6 @@ export const useAuthStore = defineStore('auth', () => {
       cpf: merged.cpf,
       email: merged.email,
       password: merged.password || undefined,
-      avatar: merged.avatar,
       headline: merged.headline,
       bio: merged.bio,
       specialties: merged.specialties,

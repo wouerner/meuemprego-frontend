@@ -36,7 +36,6 @@ const mockCandidates: CandidateProfile[] = [
     name: 'Carlos Eduardo',
     cpf: '529.982.247-25',
     email: 'carlos.eduardo@email.com',
-    avatar: 'https://example.com/avatar.jpg',
     headline: 'Engenheiro de Software Senior',
     seniority: 'Senior',
     area: 'Tecnologia da Informação',
@@ -54,7 +53,6 @@ const mockCandidates: CandidateProfile[] = [
     name: 'Mariana Silva',
     cpf: '111.444.777-35',
     email: 'mariana.silva@email.com',
-    avatar: 'https://example.com/avatar2.jpg',
     headline: 'Product Manager Pleno',
     seniority: 'Pleno',
     area: 'Produtos & Design',
@@ -90,7 +88,6 @@ describe('RF-002, RF-005, RF-008, RF-010 & RNF-001: Candidates, LGPD, CPF e Paus
       name: 'Tentativa Duplicada',
       cpf: '529.982.247-25', // CPF já existente no Carlos Eduardo
       email: 'outra.pessoa@email.com',
-      avatar: 'https://example.com/avatar.jpg',
       headline: 'Developer',
       seniority: 'Pleno',
       area: 'Tecnologia da Informação',
@@ -144,7 +141,6 @@ describe('RF-002, RF-005, RF-008, RF-010 & RNF-001: Candidates, LGPD, CPF e Paus
       name: 'Novo Talent',
       cpf: '999.888.777-66', // CPF Único
       email: 'novo.talent@email.com',
-      avatar: 'https://example.com/avatar.jpg',
       headline: 'Software Engineer',
       seniority: 'Senior',
       area: 'Tecnologia da Informação',
