@@ -194,9 +194,16 @@ async function handleLogin() {
 function sendPasswordReset() {
   if (!forgotEmail.value) return
   showForgotDialog.value = false
-  toastMessage.value = `Instruções enviadas para ${forgotEmail.value}`
-  showToast.value = true
-  forgotEmail.value = ''
+  authStore
+    .requestPasswordReset(forgotEmail.value.trim())
+    .catch(() => {
+      // Sempre mantém a UX neutra (não revela se o e-mail existe); erro de rede é silencioso.
+    })
+    .finally(() => {
+      toastMessage.value = `Se o e-mail ${forgotEmail.value} estiver cadastrado, você receberá as instruções de redefinição.`
+      showToast.value = true
+      forgotEmail.value = ''
+    })
 }
 </script>
 

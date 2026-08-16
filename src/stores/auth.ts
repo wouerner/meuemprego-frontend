@@ -161,6 +161,14 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
+  async function requestPasswordReset(email: string) {
+    await api.post('/auth/forgot-password', { email })
+  }
+
+  async function resetPassword(tokenLink: string, newPassword: string) {
+    await api.post('/auth/reset-password', { token: tokenLink, new_password: newPassword })
+  }
+
   function logout() {
     token.value = null
     user.value = null
@@ -249,6 +257,8 @@ export const useAuthStore = defineStore('auth', () => {
     setRole,
     detectRole,
     resolveRole,
+    requestPasswordReset,
+    resetPassword,
     updateCandidateProfile,
     toggleCandidateContactRequest,
     updateHunterProfile,

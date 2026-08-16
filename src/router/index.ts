@@ -25,6 +25,11 @@ const router = createRouter({
       component: () => import('@/pages/login.vue'),
     },
     {
+      path: '/redefinir-senha',
+      name: 'ResetPassword',
+      component: () => import('@/pages/redefinir-senha.vue'),
+    },
+    {
       path: '/hunters',
       name: 'HuntersCatalog',
       component: () => import('@/pages/hunters.vue'),
