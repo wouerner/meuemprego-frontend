@@ -76,7 +76,7 @@ router.beforeEach((to, _from, next) => {
   const requiredRoles = to.meta.requiresRole as readonly string[] | undefined
   if (requiredRoles && requiredRoles.length > 0) {
     const role = auth.currentRole === 'visitante' && auth.user
-      ? auth.detectRole(auth.user.email)
+      ? auth.resolveRole(auth.user as { email: string; role?: string })
       : auth.currentRole
     if (!requiredRoles.includes(role)) {
       return next('/')

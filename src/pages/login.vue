@@ -71,7 +71,7 @@
         </div>
 
         <!-- Demo Accounts -->
-        <div class="text-center text-caption text-grey-lighten-1 mb-4">
+        <div v-if="showDemoAccounts" class="text-center text-caption text-grey-lighten-1 mb-4">
           Contas de demonstração (senha: <code>password123</code>):
           <div class="mt-1">
             <code>admin@meuemprego.pro</code> ·
@@ -162,6 +162,9 @@ const rules = {
   email: (v: string) => /.+@.+\..+/.test(v) || 'E-mail inválido',
   minLength: (v: string) => (v && v.length >= 6) || 'Mínimo de 6 caracteres',
 }
+
+// Exibe as contas demo apenas em dev (ou quando VITE_SHOW_DEMO_ACCOUNTS=true).
+const showDemoAccounts = import.meta.env.VITE_SHOW_DEMO_ACCOUNTS === 'true' || import.meta.env.DEV
 
 async function handleLogin() {
   errorMessage.value = ''

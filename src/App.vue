@@ -323,14 +323,14 @@ const roleChipIcon = computed(() => {
 
 const profileRoute = computed(() => {
   const role = authStore.currentRole === 'visitante' && authStore.user
-    ? authStore.detectRole(authStore.user.email)
+    ? authStore.resolveRole(authStore.user as { email: string; role?: string })
     : authStore.currentRole
   return role === 'candidato' ? '/cadastro' : role === 'hunter' ? '/perfil-hunter' : '/admin'
 })
 
 const menuItems = computed(() => {
   const role = authStore.currentRole === 'visitante' && authStore.user
-    ? authStore.detectRole(authStore.user.email)
+    ? authStore.resolveRole(authStore.user as { email: string; role?: string })
     : authStore.currentRole
   const isCandidate = role === 'candidato'
   const canAccessVitrine = role === 'admin' || role === 'hunter'

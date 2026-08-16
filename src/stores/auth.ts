@@ -49,7 +49,7 @@ function emptyHunterProfile(): HunterProfile {
 
 export const useAuthStore = defineStore('auth', () => {
   const token = ref<string | null>(localStorage.getItem('auth_token'))
-  const user = ref<{ id: number; name: string; email: string; created_at?: string } | null>(
+  const user = ref<{ id: number; name: string; email: string; role?: string; created_at?: string } | null>(
     JSON.parse(localStorage.getItem('auth_user') || 'null'),
   )
   const currentRole = ref<UserRole>('visitante')
@@ -108,15 +108,27 @@ export const useAuthStore = defineStore('auth', () => {
     return 'candidato'
   }
 
+  // Priority: role from server (authoritative) → email fallback (dev convenience).
+  function resolveRole(userPayload: { email: string; role?: string }): UserRole {
+    if (userPayload.role === 'admin' || userPayload.role === 'hunter' || userPayload.role === 'candidato') {
+      return userPayload.role
+    }
+    return detectRole(userPayload.email)
+  }
+
+  function persistAuth(payload: { token: string; user: { id: number; name: string; email: string; role?: string } }) {
+    token.value = payload.token
+    user.value = payload.user
+    localStorage.setItem('auth_token', payload.token)
+    localStorage.setItem('auth_user', JSON.stringify(payload.user))
+    currentRole.value = resolveRole(payload.user)
+  }
+
   async function login(email: string, password: string) {
     isLoading.value = true
     try {
       const { data } = await api.post('/auth/login', { email, password })
-      token.value = data.token
-      user.value = { id: data.user.id, name: data.user.name, email: data.user.email }
-      localStorage.setItem('auth_token', data.token)
-      localStorage.setItem('auth_user', JSON.stringify(user.value))
-      currentRole.value = detectRole(email)
+      persistAuth({ token: data.token, user: data.user })
       await loadProfiles()
       return data
     } finally {
@@ -124,15 +136,11 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
-  async function register(name: string, email: string, password: string) {
+  async function register(name: string, email: string, password: string, role?: 'candidato' | 'hunter') {
     isLoading.value = true
     try {
-      const { data } = await api.post('/auth/register', { name, email, password })
-      token.value = data.token
-      user.value = { id: data.user.id, name: data.user.name, email: data.user.email }
-      localStorage.setItem('auth_token', data.token)
-      localStorage.setItem('auth_user', JSON.stringify(user.value))
-      currentRole.value = detectRole(email)
+      const { data } = await api.post('/auth/register', { name, email, password, role })
+      persistAuth({ token: data.token, user: data.user })
       await loadProfiles()
       return data
     } finally {
@@ -143,9 +151,10 @@ export const useAuthStore = defineStore('auth', () => {
   async function fetchMe() {
     try {
       const { data } = await api.get('/users/me')
-      user.value = { id: data.id, name: data.name, email: data.email }
-      localStorage.setItem('auth_user', JSON.stringify(user.value))
-      currentRole.value = detectRole(data.email)
+      const payload = { id: data.id, name: data.name, email: data.email, role: data.role }
+      user.value = payload
+      localStorage.setItem('auth_user', JSON.stringify(payload))
+      currentRole.value = resolveRole(payload)
       await loadProfiles()
       return data
     } catch {
@@ -170,7 +179,7 @@ export const useAuthStore = defineStore('auth', () => {
       await fetchMe()
     }
     if (token.value && user.value && currentRole.value === 'visitante') {
-      currentRole.value = detectRole(user.value.email)
+      currentRole.value = resolveRole(user.value)
     }
     await loadProfiles()
   }
@@ -243,6 +252,7 @@ export const useAuthStore = defineStore('auth', () => {
     loadProfiles,
     setRole,
     detectRole,
+    resolveRole,
     updateCandidateProfile,
     toggleCandidateContactRequest,
     updateHunterProfile,

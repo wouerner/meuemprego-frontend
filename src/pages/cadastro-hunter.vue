@@ -377,7 +377,7 @@ async function submitForm() {
 
   try {
     if (!authStore.isAuthenticated) {
-      await authStore.register(formData.name, formData.email, formData.password)
+      await authStore.register(formData.name, formData.email, formData.password, 'hunter')
     }
     authStore.setRole('hunter')
 
