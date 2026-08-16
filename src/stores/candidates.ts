@@ -86,7 +86,6 @@ export const useCandidatesStore = defineStore('candidates', () => {
       name: newCandidate.name,
       cpf: newCandidate.cpf,
       email: newCandidate.email,
-      password: newCandidate.password,
       headline: newCandidate.headline,
       seniority: newCandidate.seniority,
       area: newCandidate.area,

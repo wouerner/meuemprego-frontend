@@ -11,7 +11,6 @@ export interface BaseProfile {
   linkedInUrl: string
   whatsappNumber: string
   createdAt: string
-  password?: string
 }
 
 // Seniority Levels

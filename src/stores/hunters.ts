@@ -125,7 +125,6 @@ export const useHuntersStore = defineStore('hunters', () => {
       name: newHunter.name,
       cpf: newHunter.cpf,
       email: newHunter.email,
-      password: newHunter.password,
       headline: newHunter.headline,
       bio: newHunter.bio,
       specialties: newHunter.specialties,

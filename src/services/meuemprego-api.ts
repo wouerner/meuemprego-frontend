@@ -5,7 +5,6 @@ export interface CandidatePayload {
   name: string
   cpf: string
   email: string
-  password?: string
   headline: string
   seniority: string
   area: string
@@ -21,7 +20,6 @@ export interface HunterPayload {
   name: string
   cpf: string
   email: string
-  password?: string
   headline: string
   bio: string
   specialties: string[]

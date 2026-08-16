@@ -106,41 +106,6 @@
                 ></v-text-field>
               </v-col>
 
-              <!-- PASSWORD & CONFIRM PASSWORD -->
-              <v-col cols="12" md="6">
-                <v-text-field
-                  v-model="formData.password"
-                  label="Nova Senha"
-                  placeholder="••••••••"
-                  prepend-inner-icon="mdi-lock-outline"
-                  :append-inner-icon="showPassword ? 'mdi-eye-off' : 'mdi-eye'"
-                  :type="showPassword ? 'text' : 'password'"
-                  variant="outlined"
-                  density="comfortable"
-                  rounded="lg"
-                  hint="Deixe em branco para manter a atual"
-                  persistent-hint
-                  :rules="[rules.minLength]"
-                  @click:append-inner="showPassword = !showPassword"
-                ></v-text-field>
-              </v-col>
-
-              <v-col cols="12" md="6">
-                <v-text-field
-                  v-model="formData.confirmPassword"
-                  label="Confirmar Nova Senha"
-                  placeholder="••••••••"
-                  prepend-inner-icon="mdi-lock-check-outline"
-                  :append-inner-icon="showPassword ? 'mdi-eye-off' : 'mdi-eye'"
-                  :type="showPassword ? 'text' : 'password'"
-                  variant="outlined"
-                  density="comfortable"
-                  rounded="lg"
-                  :rules="[rules.passwordMatch]"
-                  @click:append-inner="showPassword = !showPassword"
-                ></v-text-field>
-              </v-col>
-
               <!-- Headline -->
               <v-col cols="12">
                 <v-text-field
@@ -282,7 +247,6 @@ const huntersStore = useHuntersStore()
 const formRef = ref()
 const isFormValid = ref(false)
 const showSnackbar = ref(false)
-const showPassword = ref(false)
 const errorMessage = ref('')
 
 const hunter = authStore.hunterUser
@@ -291,8 +255,6 @@ const formData = reactive({
   name: hunter.name,
   cpf: hunter.cpf || '',
   email: hunter.email,
-  password: '',
-  confirmPassword: '',
   headline: hunter.headline,
   bio: hunter.bio,
   specialties: [...hunter.specialties],
@@ -320,8 +282,6 @@ function handleCpfInput() {
 
 const rules = {
   required: (v: any) => (Array.isArray(v) ? v.length > 0 || 'Selecione pelo menos uma opção' : !!v || 'Campo obrigatório'),
-  minLength: (v: string) => !v || v.length >= 6 || 'Mínimo de 6 caracteres',
-  passwordMatch: (v: string) => !formData.password || v === formData.password || 'As senhas não coincidem',
   email: (v: string) => /.+@.+\..+/.test(v) || 'E-mail inválido',
   url: (v: string) => /https?:\/\/.+/.test(v) || 'URL precisa iniciar com http:// ou https://',
   phone: (v: string) => /^\d{10,13}$/.test(v.replace(/\D/g, '')) || 'Informe apenas números com DDD (ex: 5511999998888)',
@@ -347,7 +307,6 @@ async function submitForm() {
       name: formData.name,
       cpf: formData.cpf,
       email: formData.email,
-      password: formData.password || undefined,
       headline: formData.headline,
       bio: formData.bio,
       specialties: formData.specialties,
