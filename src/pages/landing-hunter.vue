@@ -15,7 +15,7 @@
           <!-- DUAL CTA -->
           <div class="d-flex flex-column flex-md-row justify-center justify-lg-start gap-3 gap-md-4 mb-6">
             <v-btn
-              class="glass-btn-primary px-4 w-100 w-md-auto hero-cta-btn"
+              class="glass-btn-hunter px-4 w-100 w-md-auto hero-cta-btn"
               size="large"
               rounded="pill"
               prepend-icon="mdi-account-group-outline"
@@ -28,7 +28,7 @@
               variant="outlined"
               size="large"
               rounded="pill"
-              class="text-white border-glass px-4 w-100 w-md-auto font-weight-bold hero-cta-btn"
+              class="text-white border-hunter-glass px-4 w-100 w-md-auto font-weight-bold hero-cta-btn"
               prepend-icon="mdi-account-tie"
               @click="navigateToRegister"
             >
@@ -45,7 +45,7 @@
         <v-col cols="12" lg="5" class="text-center position-relative mt-6 mt-lg-0">
           <div class="hero-visual-card glass-panel pa-4 pa-sm-6 rounded-2xl elevation-12">
             <div class="d-flex align-center justify-space-between mb-4">
-              <span class="text-caption font-weight-bold text-secondary text-uppercase">Vitrine em Tempo Real</span>
+              <span class="text-caption font-weight-bold text-orange text-uppercase">Vitrine em Tempo Real</span>
               <span class="glass-badge text-success">Live</span>
             </div>
 
@@ -55,14 +55,14 @@
                 <div class="text-caption text-grey">Engenheiro Staff (Perfil Profissional)</div>
               </div>
               <div class="d-flex align-center justify-space-between mt-3 flex-wrap gap-2">
-                <span class="text-caption text-secondary">Opt-in Vitrine Ativo</span>
+                <span class="text-caption text-orange">Opt-in Vitrine Ativo</span>
                 <v-btn size="x-small" color="success" rounded="pill" prepend-icon="mdi-whatsapp">Abordar</v-btn>
               </div>
             </div>
 
             <div class="glass-mini-card pa-4 rounded-xl text-start">
               <div class="d-flex align-center gap-3">
-                <v-avatar size="42" color="secondary">
+                <v-avatar size="42" color="orange">
                   <v-icon icon="mdi-account-tie" color="white" size="20"></v-icon>
                 </v-avatar>
                 <div>
@@ -70,7 +70,7 @@
                   <div class="text-caption text-grey">Job Hunter Sênior Tech</div>
                 </div>
               </div>
-              <div class="text-caption text-accent mt-2">Assessoria Completa · Sênior/C-Level</div>
+              <div class="text-caption text-orange-lighten-1 mt-2">Assessoria Completa · Sênior/C-Level</div>
             </div>
           </div>
         </v-col>
@@ -88,14 +88,14 @@
 
       <v-col cols="6" sm="6" md="3">
         <v-card class="glass-panel pa-4 pa-sm-6 text-center rounded-2xl h-100" elevation="0">
-          <div class="text-h4 text-sm-h3 font-weight-black text-secondary mb-1">+380</div>
+          <div class="text-h4 text-sm-h3 font-weight-black text-orange mb-1">+380</div>
           <div class="text-caption text-sm-subtitle-2 text-grey">Job Hunters Credenciados</div>
         </v-card>
       </v-col>
 
       <v-col cols="6" sm="6" md="3">
         <v-card class="glass-panel pa-4 pa-sm-6 text-center rounded-2xl h-100" elevation="0">
-          <div class="text-h4 text-sm-h3 font-weight-black text-accent mb-1">98.4%</div>
+          <div class="text-h4 text-sm-h3 font-weight-black text-orange-lighten-1 mb-1">98.4%</div>
           <div class="text-caption text-sm-subtitle-2 text-grey">Satisfação de Profissionais</div>
         </v-card>
       </v-col>
@@ -111,29 +111,29 @@
     <!-- SEÇÃO 3: COMO FUNCIONA PARA O JOB HUNTER -->
     <v-card class="glass-panel pa-5 pa-sm-8 rounded-3xl mb-6 mb-sm-10" elevation="0">
       <div class="text-center mb-6 mb-sm-8">
-        <span class="glass-badge text-secondary mb-2">Simplicidade & Autonomia</span>
+        <span class="glass-badge text-orange mb-2">Simplicidade & Autonomia</span>
         <h2 class="text-h4 text-sm-h3 font-weight-black gradient-text-subtle mb-2">Como Funciona Para o Job Hunter</h2>
         <p class="text-body-2 text-sm-subtitle-1 text-grey max-w-600 mx-auto">Acesso qualificado a talentos prontos para o mercado.</p>
       </div>
 
       <v-row justify="center">
         <v-col cols="12" md="8">
-          <div class="glass-panel pa-5 pa-sm-6 rounded-2xl h-100 border-secondary-glow">
+          <div class="glass-panel pa-5 pa-sm-6 rounded-2xl h-100 border-hunter-glow">
             <div class="mb-4">
               <h3 class="text-subtitle-1 text-sm-h6 font-weight-bold text-white pa-0 ma-0">Para Job Hunters</h3>
-              <span class="text-caption text-secondary">Da vitrine ao contato direto</span>
+              <span class="text-caption text-orange">Da vitrine ao contato direto</span>
             </div>
 
             <v-timeline density="compact" align="start" class="px-1 px-sm-2">
-              <v-timeline-item dot-color="secondary" size="x-small">
+              <v-timeline-item dot-color="orange" size="x-small">
                 <div class="font-weight-bold text-white text-caption text-sm-body-2">1. Crie seu Perfil de Job Hunter</div>
                 <div class="text-caption text-grey">Credencie-se com suas especialidades, senioridades atendidas e modelo de serviço.</div>
               </v-timeline-item>
-              <v-timeline-item dot-color="secondary" size="x-small">
+              <v-timeline-item dot-color="orange" size="x-small">
                 <div class="font-weight-bold text-white text-caption text-sm-body-2">2. Solicite Acesso à Vitrine</div>
                 <div class="text-caption text-grey">Cada profissional pode aceitar ou recusar seu pedido — você sempre respeita o consentimento do talento.</div>
               </v-timeline-item>
-              <v-timeline-item dot-color="secondary" size="x-small">
+              <v-timeline-item dot-color="orange" size="x-small">
                 <div class="font-weight-bold text-white text-caption text-sm-body-2">3. Aborde por WhatsApp e LinkedIn</div>
                 <div class="text-caption text-grey">Após a aprovação, conecte-se diretamente e acelere seus processos de recolocação e preenchimento de vagas.</div>
               </v-timeline-item>
@@ -142,7 +142,7 @@
             <v-btn
               to="/cadastro-hunter"
               block
-              class="glass-btn-primary mt-4 hero-cta-btn"
+              class="glass-btn-hunter mt-4 hero-cta-btn"
               rounded="pill"
               prepend-icon="mdi-account-tie-outline"
             >
@@ -166,7 +166,7 @@
       </v-col>
       <v-col cols="12" md="6" lg="3">
         <v-card class="glass-panel pa-5 rounded-2xl h-100" elevation="0">
-          <v-avatar color="secondary" size="48" class="mb-3">
+          <v-avatar color="orange" size="48" class="mb-3">
             <v-icon icon="mdi-account-plus-outline" color="white"></v-icon>
           </v-avatar>
           <h3 class="text-subtitle-1 font-weight-bold text-white mb-1">Talentos Sob Demanda</h3>
@@ -175,7 +175,7 @@
       </v-col>
       <v-col cols="12" md="6" lg="3">
         <v-card class="glass-panel pa-5 rounded-2xl h-100" elevation="0">
-          <v-avatar color="accent" size="48" class="mb-3">
+          <v-avatar color="orange-darken-1" size="48" class="mb-3">
             <v-icon icon="mdi-whatsapp" color="white"></v-icon>
           </v-avatar>
           <h3 class="text-subtitle-1 font-weight-bold text-white mb-1">Contato Direto</h3>
@@ -208,7 +208,7 @@
 
         <v-expansion-panel class="glass-panel mb-2 rounded-xl" title="Como funciona a vitrine de profissionais?">
           <v-expansion-panel-text class="text-grey-lighten-1 text-body-2">
-            A vitrine lista perfis profissionais que ativaram a opção "Solicitar contato de Hunters". Para ver os dados completos e abordar o talento, você envia um pedido de acesso que o profissional pode aceitar ou recusar.
+            A vitrine lista perfis profissionais que ativaram a opção "Solicitar contato de Job Hunters". Para ver os dados completos e abordar o talento, você envia um pedido de acesso que o profissional pode aceitar ou recusar.
           </v-expansion-panel-text>
         </v-expansion-panel>
 
@@ -228,7 +228,7 @@
       </p>
       <div class="d-flex justify-center flex-column flex-md-row gap-3 gap-md-4">
         <v-btn
-          class="glass-btn-primary px-6 w-100 w-md-auto hero-cta-btn"
+          class="glass-btn-hunter px-6 w-100 w-md-auto hero-cta-btn"
           size="large"
           rounded="pill"
           prepend-icon="mdi-account-group-outline"
@@ -241,7 +241,7 @@
           variant="outlined"
           size="large"
           rounded="pill"
-          class="text-white border-glass px-6 w-100 w-md-auto font-weight-bold hero-cta-btn"
+          class="text-white border-hunter-glass px-6 w-100 w-md-auto font-weight-bold hero-cta-btn"
           prepend-icon="mdi-account-tie-outline"
         >
           Criar Perfil de Job Hunter
@@ -288,6 +288,7 @@ async function navigateToShowcase() {
   padding-bottom: 10px !important;
   font-size: 0.95rem !important;
   line-height: 1.25 !important;
+  text-transform: none !important;
 }
 
 @media (min-width: 600px) {
@@ -297,9 +298,31 @@ async function navigateToShowcase() {
   }
 }
 
-.border-secondary-glow {
-  border: 1px solid rgba(6, 182, 212, 0.4) !important;
-  box-shadow: 0 0 30px rgba(6, 182, 212, 0.15) !important;
+.glass-btn-hunter {
+  background: linear-gradient(135deg, rgba(249, 115, 22, 0.9) 0%, rgba(234, 88, 12, 0.9) 100%) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.25) !important;
+  backdrop-filter: blur(8px) !important;
+  box-shadow: 0 8px 25px rgba(249, 115, 22, 0.3) !important;
+  transition: all 0.3s ease !important;
+  text-transform: none !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.3px !important;
+}
+
+.glass-btn-hunter:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 35px rgba(249, 115, 22, 0.5) !important;
+}
+
+.border-hunter-glass {
+  border: 1px solid rgba(249, 115, 22, 0.45) !important;
+  backdrop-filter: blur(8px);
+}
+
+.border-hunter-glow {
+  border: 1px solid rgba(249, 115, 22, 0.4) !important;
+  box-shadow: 0 0 30px rgba(249, 115, 22, 0.15) !important;
 }
 .hero-visual-card {
   background: rgba(15, 23, 42, 0.75) !important;
