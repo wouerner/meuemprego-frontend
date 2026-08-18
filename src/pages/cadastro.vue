@@ -224,7 +224,7 @@
                     >
                       <template #label>
                         <div>
-                          <strong class="text-white">Solicitar contato de Hunters (Exibir na Vitrine de Profissionais)</strong>
+                          <strong class="text-white">Solicitar contato de Job Hunters (Exibir na Vitrine de Profissionais)</strong>
                           <div class="text-caption text-grey">
                             Ao marcar esta opção, seu perfil profissional aparecerá na Vitrine para que Job Hunters entrem em contato diretamente.
                           </div>
@@ -292,7 +292,7 @@
             <strong>1. Coleta de Dados e CPF:</strong> Coletamos seu nome, CPF, e-mail, perfil do LinkedIn e WhatsApp para validar a autenticidade e evitar a criação de perfis duplicados na plataforma meuemprego.pro.
           </p>
           <p>
-            <strong>2. Sigilo Absoluto do CPF:</strong> Seu CPF é um dado protegido. Ele é utilizado unicamente em rotinas internas de verificação de unicidade e Jamais será compartilhado ou exposto para Job Hunters ou terceiros.
+            <strong>2. Sigilo Absoluto do CPF:</strong> Seu CPF é um dado protegido. Ele é utilizado unicamente em rotinas internas de verificação de unicidade e Jamais será compartilhado ou exposto para terceiros.
           </p>
           <p>
             <strong>3. Direitos do Titular:</strong> Você tem o direito de solicitar a exclusão de seu cadastro e dados associados a qualquer momento.

@@ -19,7 +19,7 @@
         <v-col cols="12" md="4" class="text-md-end">
           <v-chip color="accent" size="large" class="font-weight-bold">
             <v-icon icon="mdi-shield-crown" start></v-icon>
-            Acesso Root Ativo
+            Acesso de Administrador Ativo
           </v-chip>
         </v-col>
       </v-row>

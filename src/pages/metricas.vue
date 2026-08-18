@@ -137,8 +137,8 @@
               {{ formatDate(event.timestamp) }}
             </td>
             <td>
-              <v-chip size="x-small" color="primary" variant="flat" class="text-uppercase font-weight-bold">
-                {{ event.initiatedByRole === 'candidato' ? 'profissional' : event.initiatedByRole }}
+              <v-chip size="x-small" color="primary" variant="flat" class="font-weight-bold">
+                {{ roleLabel(event.initiatedByRole) }}
               </v-chip>
             </td>
             <td>
@@ -212,6 +212,15 @@ function formatDate(isoStr: string) {
     return d.toLocaleString('pt-BR')
   } catch {
     return isoStr
+  }
+}
+
+function roleLabel(role: string): string {
+  switch (role) {
+    case 'candidato': return 'Profissional'
+    case 'hunter': return 'Job Hunter'
+    case 'admin': return 'Administrador'
+    default: return 'Visitante'
   }
 }
 </script>

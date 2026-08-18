@@ -269,7 +269,7 @@
           <ul class="text-body-2 text-grey-lighten-1 ma-0 px-4 space-y-2">
             <li>Seu perfil entra em análise pela equipe de curadoria (status <strong class="text-white">Pendente</strong>).</li>
             <li>Após a aprovação, você poderá navegar pela <strong class="text-white">Vitrine de Profissionais</strong> e solicitar acesso aos perfis com consentimento.</li>
-            <li>Aborde os talentos diretamente via WhatsApp e LinkedIn para acelerar reclocação e preenchimento de vagas.</li>
+            <li>Aborde os talentos diretamente via WhatsApp e LinkedIn para acelerar recolocação e preenchimento de vagas.</li>
           </ul>
         </v-card>
       </v-col>
@@ -294,7 +294,7 @@
             <strong>1. Coleta de Dados e CPF:</strong> Coletamos seu nome, CPF, e-mail, perfil do LinkedIn e WhatsApp para validar a autenticidade e evitar a criação de perfis duplicados na plataforma meuemprego.pro.
           </p>
           <p>
-            <strong>2. Sigilo Absoluto do CPF:</strong> Seu CPF é um dado protegido. Ele é utilizado unicamente em rotinas internas de verificação de unicidade e Jamais será compartilhado ou exposto para profissionais ou terceiros.
+            <strong>2. Sigilo Absoluto do CPF:</strong> Seu CPF é um dado protegido. Ele é utilizado unicamente em rotinas internas de verificação de unicidade e Jamais será compartilhado ou exposto para terceiros.
           </p>
           <p>
             <strong>3. Direitos do Titular:</strong> Você tem o direito de solicitar a exclusão de seu cadastro e dados associados a qualquer momento.

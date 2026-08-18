@@ -110,7 +110,7 @@
     <template v-if="mode === 'accepted'">
       <v-icon icon="mdi-account-tie-outline" size="64" color="grey" class="mb-3"></v-icon>
       <h3 class="text-h6 font-weight-bold gradient-text-subtle mb-2">Nenhum Job Hunter aceito ainda</h3>
-      <p class="text-body-2 text-grey mb-4">Quando você aceitar um pedido de acesso, o hunter aparecerá aqui para contato direto.</p>
+      <p class="text-body-2 text-grey mb-4">Quando você aceitar um pedido de acesso, o Job Hunter aparecerá aqui para contato direto.</p>
     </template>
     <template v-else>
       <v-icon icon="mdi-check-circle-outline" size="64" color="success" class="mb-3"></v-icon>

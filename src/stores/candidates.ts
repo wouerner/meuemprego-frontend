@@ -80,7 +80,7 @@ export const useCandidatesStore = defineStore('candidates', () => {
 
   function registerCandidate(newCandidate: Omit<CandidateProfile, 'id' | 'createdAt' | 'isApproved'>) {
     if (isCpfRegistered(newCandidate.cpf)) {
-      throw new Error('CPF já cadastrado na plataforma para outro Candidato.')
+      throw new Error('CPF já cadastrado na plataforma para outro Profissional.')
     }
     return saveProfile({
       name: newCandidate.name,

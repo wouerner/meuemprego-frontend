@@ -247,7 +247,7 @@
               <div class="text-caption text-grey text-center text-md-end">
                 <div>© 2026 meuemprego.pro — Todos os direitos reservados.</div>
                 <div class="d-flex align-center justify-center justify-md-end gap-3 mt-1">
-                  <span class="d-flex align-center"><v-icon icon="mdi-lock-outline" color="secondary" size="14" class="mr-1"></v-icon> LGPD Compliant</span>
+                  <span class="d-flex align-center"><v-icon icon="mdi-lock-outline" color="secondary" size="14" class="mr-1"></v-icon> Em conformidade com LGPD</span>
                 </div>
               </div>
             </div>

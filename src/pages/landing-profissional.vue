@@ -103,7 +103,7 @@
       <v-col cols="6" sm="6" md="3">
         <v-card class="glass-panel pa-4 pa-sm-6 text-center rounded-2xl h-100" elevation="0">
           <div class="text-h4 text-sm-h3 font-weight-black text-accent mb-1">98.4%</div>
-          <div class="text-caption text-sm-subtitle-2 text-grey">Satisfação no Atendimento</div>
+          <div class="text-caption text-sm-subtitle-2 text-grey">Satisfação de Profissionais</div>
         </v-card>
       </v-col>
 
@@ -178,7 +178,7 @@
 
         <v-expansion-panel class="glass-panel mb-2 rounded-xl" title="Como os Job Hunters entram em contato com meu Perfil Profissional?">
           <v-expansion-panel-text class="text-grey-lighten-1 text-body-2">
-            Ao marcar a opção "Solicitar contato de Hunters", seu perfil profissional fica visível na Vitrine. Os Job Hunters credenciados utilizam o link direto formatado para seu WhatsApp ou LinkedIn.
+            Ao marcar a opção "Solicitar contato de Job Hunters", seu perfil profissional fica visível na Vitrine. Os Job Hunters credenciados utilizam o link direto formatado para seu WhatsApp ou LinkedIn.
           </v-expansion-panel-text>
         </v-expansion-panel>
 
@@ -236,6 +236,7 @@ function navigateToRegister(role: 'candidato' | 'hunter') {
   padding-bottom: 10px !important;
   font-size: 0.95rem !important;
   line-height: 1.25 !important;
+  text-transform: none !important;
 }
 
 @media (min-width: 600px) {

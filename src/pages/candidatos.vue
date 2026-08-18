@@ -411,7 +411,7 @@
           <strong class="text-white">{{ selectedAccessCandidate?.name }}</strong>
         </p>
         <p class="text-caption text-grey mb-4">
-          O candidato precisará aceitar o pedido para que você possa visualizar seus dados de contato.
+          O profissional precisará aceitar o pedido para que você possa visualizar seus dados de contato.
         </p>
         <v-textarea
           v-model="accessRequestMessage"
@@ -591,8 +591,8 @@ function getRequestEmptyTitle(status: AccessRequestStatus): string {
 }
 
 function getRequestEmptyText(status: AccessRequestStatus): string {
-  if (status === 'accepted') return 'Quando um candidato aceitar seu pedido de acesso, ele aparecerá aqui para contato direto.'
-  if (status === 'rejected') return 'Nenhum candidato recusou seus pedidos de acesso até o momento.'
+  if (status === 'accepted') return 'Quando um profissional aceitar seu pedido de acesso, ele aparecerá aqui para contato direto.'
+  if (status === 'rejected') return 'Nenhum profissional recusou seus pedidos de acesso até o momento.'
   return 'Seus pedidos de acesso aguardando aprovação aparecerão aqui.'
 }
 

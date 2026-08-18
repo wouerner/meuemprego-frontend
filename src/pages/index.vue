@@ -56,7 +56,7 @@
           </p>
           <div class="d-flex flex-wrap gap-2 mb-4">
             <span class="glass-badge"><v-icon icon="mdi-check" size="14" color="success"></v-icon> 100% gratuito</span>
-            <span class="glass-badge"><v-icon icon="mdi-check" size="14" color="success"></v-icon> LGPD compliant</span>
+            <span class="glass-badge"><v-icon icon="mdi-check" size="14" color="success"></v-icon> Em conformidade com LGPD</span>
             <span class="glass-badge"><v-icon icon="mdi-check" size="14" color="success"></v-icon> Contato direto</span>
           </div>
           <v-btn to="/profissional" variant="outlined" rounded="pill" class="font-weight-bold border-glass w-100" prepend-icon="mdi-arrow-right">
@@ -95,7 +95,7 @@
     <!-- SEÇÃO: MOTOR DA PLATAFORMA -->
     <v-card class="glass-panel pa-5 pa-sm-8 rounded-3xl" elevation="0">
       <div class="text-center mb-6">
-        <span class="glass-badge text-secondary mb-2">Ecosistema Duplo Fluxo</span>
+        <span class="glass-badge text-secondary mb-2">Ecossistema Duplo Fluxo</span>
         <h2 class="text-h4 text-sm-h3 font-weight-black gradient-text-subtle mb-2">Uma só plataforma, dois objetivos</h2>
         <p class="text-body-2 text-sm-subtitle-1 text-grey max-w-600 mx-auto">
           Profissionais aceleram suas carreiras e Job Hunters encontram o talento certo — com transparência e sem intermediários.
@@ -139,6 +139,7 @@
   padding-bottom: 10px !important;
   font-size: 0.95rem !important;
   line-height: 1.25 !important;
+  text-transform: none !important;
 }
 
 @media (min-width: 600px) {
