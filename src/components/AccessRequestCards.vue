@@ -108,7 +108,7 @@
 
   <v-card v-else class="glass-panel pa-12 text-center rounded-2xl mt-4" elevation="0">
     <template v-if="mode === 'accepted'">
-      <v-icon icon="mdi-account-tie-outline" size="64" color="grey" class="mb-3"></v-icon>
+      <v-icon icon="mdi-target" size="64" color="grey" class="mb-3"></v-icon>
       <h3 class="text-h6 font-weight-bold gradient-text-subtle mb-2">Nenhum Job Hunter aceito ainda</h3>
       <p class="text-body-2 text-grey mb-4">Quando você aceitar um pedido de acesso, o Job Hunter aparecerá aqui para contato direto.</p>
     </template>

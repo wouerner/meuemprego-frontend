@@ -1,5 +1,5 @@
 <template>
-  <div class="glass-wrapper" :class="{ 'theme-light': !isDark }">
+  <div class="glass-wrapper" :class="{ 'theme-light': !isDark, 'orb-theme-orange': isHunterLanding }">
     <!-- Ambient Animated Background Orbs -->
     <div class="orb orb-1"></div>
     <div class="orb orb-2"></div>
@@ -160,7 +160,7 @@
             <v-list-item
               title="Job Hunter / Coach"
               subtitle="Navega na vitrine de profissionais"
-              prepend-icon="mdi-account-tie-outline"
+              prepend-icon="mdi-target"
               @click="authStore.setRole('hunter')"
               :active="authStore.currentRole === 'hunter'"
               rounded="lg"
@@ -278,6 +278,8 @@ const toastIcon = ref('mdi-eye-outline')
 
 const isDark = computed(() => theme.global.name.value === 'darkGlassTheme')
 
+const isHunterLanding = computed(() => router.currentRoute.value.name === 'HunterLanding')
+
 onMounted(() => {
   authStore.init()
   if (authStore.isAuthenticated) metricsStore.fetchEvents()
@@ -316,7 +318,7 @@ const roleChipColor = computed(() => {
 })
 
 const roleChipIcon = computed(() => {
-  if (authStore.currentRole === 'hunter') return 'mdi-account-tie'
+  if (authStore.currentRole === 'hunter') return 'mdi-target'
   if (authStore.currentRole === 'admin') return 'mdi-shield-crown'
   return 'mdi-account-school'
 })

@@ -30,7 +30,7 @@
               size="large"
               rounded="pill"
               class="text-white border-glass px-4 w-100 w-md-auto font-weight-bold hero-cta-btn"
-              prepend-icon="mdi-account-tie"
+              prepend-icon="mdi-target"
               @click="navigateToRegister('hunter')"
             >
               Sou Job Hunter / Cadastrar Perfil
@@ -55,7 +55,7 @@
             <div class="glass-mini-card pa-4 rounded-xl mb-3 text-start">
               <div class="d-flex align-center gap-3">
                 <v-avatar size="48" color="secondary">
-                  <v-icon icon="mdi-account-tie" color="white" size="24"></v-icon>
+                  <v-icon icon="mdi-target" color="white" size="24"></v-icon>
                 </v-avatar>
                 <div>
                   <div class="text-subtitle-2 font-weight-bold text-white pa-0 ma-0">Juliana Mendes</div>

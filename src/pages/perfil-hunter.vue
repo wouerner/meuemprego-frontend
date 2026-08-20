@@ -37,7 +37,7 @@
                 </div>
               </div>
               <v-avatar color="secondary" size="48">
-                <v-icon icon="mdi-account-tie" size="28"></v-icon>
+                <v-icon icon="mdi-target" size="28"></v-icon>
               </v-avatar>
             </div>
 

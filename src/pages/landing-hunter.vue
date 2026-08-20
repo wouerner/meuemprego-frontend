@@ -3,7 +3,7 @@
     <!-- SEÇÃO 1: HERO GLASSMORPHIC (MOBILE FIRST) -->
     <v-card class="glass-panel pa-5 pa-sm-8 pa-md-12 rounded-3xl mb-6 mb-sm-10 relative overflow-hidden" elevation="0">
       <v-row align="center">
-        <v-col cols="12" lg="7" class="text-center text-lg-start">
+        <v-col cols="12" class="text-center">
           <h1 class="text-h4 text-sm-h3 text-md-h2 font-weight-black gradient-text mb-4 leading-tight">
             Sua Vitrine Exclusiva de Talentos Qualificados
           </h1>
@@ -29,7 +29,7 @@
               size="large"
               rounded="pill"
               class="text-white border-hunter-glass px-4 w-100 w-md-auto font-weight-bold hero-cta-btn"
-              prepend-icon="mdi-account-tie"
+              prepend-icon="mdi-target"
               @click="navigateToRegister"
             >
               Criar Perfil de Job Hunter
@@ -42,38 +42,7 @@
           </div>
         </v-col>
 
-        <v-col cols="12" lg="5" class="text-center position-relative mt-6 mt-lg-0">
-          <div class="hero-visual-card glass-panel pa-4 pa-sm-6 rounded-2xl elevation-12">
-            <div class="d-flex align-center justify-space-between mb-4">
-              <span class="text-caption font-weight-bold text-orange text-uppercase">Vitrine em Tempo Real</span>
-              <span class="glass-badge text-success">Live</span>
-            </div>
-
-            <div class="glass-mini-card pa-4 rounded-xl mb-3 text-start">
-              <div>
-                <div class="text-subtitle-2 font-weight-bold text-white pa-0 ma-0">Carlos Eduardo</div>
-                <div class="text-caption text-grey">Engenheiro Staff (Perfil Profissional)</div>
-              </div>
-              <div class="d-flex align-center justify-space-between mt-3 flex-wrap gap-2">
-                <span class="text-caption text-orange">Opt-in Vitrine Ativo</span>
-                <v-btn size="x-small" color="success" rounded="pill" prepend-icon="mdi-whatsapp">Abordar</v-btn>
-              </div>
-            </div>
-
-            <div class="glass-mini-card pa-4 rounded-xl text-start">
-              <div class="d-flex align-center gap-3">
-                <v-avatar size="42" color="orange">
-                  <v-icon icon="mdi-account-tie" color="white" size="20"></v-icon>
-                </v-avatar>
-                <div>
-                  <div class="text-subtitle-2 font-weight-bold text-white pa-0 ma-0">Juliana Mendes</div>
-                  <div class="text-caption text-grey">Job Hunter Sênior Tech</div>
-                </div>
-              </div>
-              <div class="text-caption text-orange-lighten-1 mt-2">Assessoria Completa · Sênior/C-Level</div>
-            </div>
-          </div>
-        </v-col>
+        
       </v-row>
     </v-card>
 
@@ -109,16 +78,15 @@
     </v-row>
 
     <!-- SEÇÃO 3: COMO FUNCIONA PARA O JOB HUNTER -->
-    <v-card class="glass-panel pa-5 pa-sm-8 rounded-3xl mb-6 mb-sm-10" elevation="0">
+    <v-card class="glass-panel pa-5 pa-sm-8 rounded-3xl mb-6 mb-sm-10 borderless" elevation="0">
       <div class="text-center mb-6 mb-sm-8">
-        <span class="glass-badge text-orange mb-2">Simplicidade & Autonomia</span>
         <h2 class="text-h4 text-sm-h3 font-weight-black gradient-text-subtle mb-2">Como Funciona Para o Job Hunter</h2>
         <p class="text-body-2 text-sm-subtitle-1 text-grey max-w-600 mx-auto">Acesso qualificado a talentos prontos para o mercado.</p>
       </div>
 
       <v-row justify="center">
         <v-col cols="12" md="8">
-          <div class="glass-panel pa-5 pa-sm-6 rounded-2xl h-100 border-hunter-glow">
+          <div class="glass-panel pa-5 pa-sm-6 rounded-2xl h-100 border-hunter-glow card-transparent">
             <div class="mb-4">
               <h3 class="text-subtitle-1 text-sm-h6 font-weight-bold text-white pa-0 ma-0">Para Job Hunters</h3>
               <span class="text-caption text-orange">Da vitrine ao contato direto</span>
@@ -144,7 +112,7 @@
               block
               class="glass-btn-hunter mt-4 hero-cta-btn"
               rounded="pill"
-              prepend-icon="mdi-account-tie-outline"
+              prepend-icon="mdi-target"
             >
               Quero Credenciar Meu Perfil
             </v-btn>
@@ -222,7 +190,7 @@
 
     <!-- SEÇÃO 6: CTA FINAL -->
     <v-card class="glass-panel pa-6 pa-sm-10 text-center rounded-3xl" elevation="0">
-      <h2 class="text-h4 text-sm-h3 font-weight-black gradient-text mb-3">Seu próximo talento pode estar a um clique</h2>
+      <h2 class="text-h4 text-sm-h3 font-weight-black gradient-text-orange mb-3">Seu próximo talento pode estar a um clique</h2>
       <p class="text-body-2 text-sm-subtitle-1 text-grey mb-6 max-w-600 mx-auto">
         Junte-se a centenas de Job Hunters que encontram talentos qualificados e prontos para o mercado no meuemprego.pro.
       </p>
@@ -242,7 +210,7 @@
           size="large"
           rounded="pill"
           class="text-white border-hunter-glass px-6 w-100 w-md-auto font-weight-bold hero-cta-btn"
-          prepend-icon="mdi-account-tie-outline"
+          prepend-icon="mdi-target"
         >
           Criar Perfil de Job Hunter
         </v-btn>
@@ -278,6 +246,12 @@ async function navigateToShowcase() {
 
 <style scoped>
 .leading-tight { line-height: 1.15; }
+
+.gradient-text-orange {
+  background: linear-gradient(135deg, #fb923c 0%, #f97316 50%, #ea580c 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
 
 .hero-cta-btn {
   white-space: normal !important;
@@ -324,13 +298,18 @@ async function navigateToShowcase() {
   border: 1px solid rgba(249, 115, 22, 0.4) !important;
   box-shadow: 0 0 30px rgba(249, 115, 22, 0.15) !important;
 }
-.hero-visual-card {
-  background: rgba(15, 23, 42, 0.75) !important;
-  border: 1px solid rgba(255, 255, 255, 0.15) !important;
-  backdrop-filter: blur(20px) !important;
+
+.borderless {
+  border: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
 }
-.glass-mini-card {
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+
+.card-transparent {
+  background: transparent !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
 }
 </style>

@@ -13,7 +13,7 @@
         </v-col>
         <v-col cols="12" md="4" class="text-md-end mt-4 mt-md-0">
           <v-chip color="secondary" variant="flat" size="large" class="font-weight-bold px-4">
-            <v-icon icon="mdi-account-tie" start size="18"></v-icon>
+            <v-icon icon="mdi-target" start size="18"></v-icon>
             Job Hunter
           </v-chip>
         </v-col>
@@ -33,7 +33,7 @@
                 <div class="text-caption text-grey">Preencha os campos obrigatórios (*) para criar seu login e cadastrar seu perfil de Job Hunter.</div>
               </div>
               <v-avatar color="secondary" size="48">
-                <v-icon icon="mdi-account-tie" size="28"></v-icon>
+                <v-icon icon="mdi-target" size="28"></v-icon>
               </v-avatar>
             </div>
 

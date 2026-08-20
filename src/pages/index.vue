@@ -28,7 +28,7 @@
               size="large"
               rounded="pill"
               class="text-white border-glass px-4 w-100 w-md-auto font-weight-bold hero-cta-btn"
-              prepend-icon="mdi-account-tie-outline"
+              prepend-icon="mdi-target"
             >
               Sou Job Hunter
             </v-btn>
@@ -69,7 +69,7 @@
         <v-card class="glass-panel pa-5 pa-sm-6 rounded-3xl h-100 glass-panel-hover cursor-pointer" elevation="0" @click="$router.push('/job-hunter')">
           <div class="d-flex align-center mb-4">
             <v-avatar color="secondary" size="56" class="mr-4 elevation-6">
-              <v-icon icon="mdi-account-tie-outline" color="white" size="28"></v-icon>
+              <v-icon icon="mdi-target" color="white" size="28"></v-icon>
             </v-avatar>
             <div>
               <h3 class="text-h6 font-weight-black text-white pa-0 ma-0">Job Hunter</h3>
